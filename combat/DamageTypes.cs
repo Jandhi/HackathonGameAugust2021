@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-public enum damageType
+public enum DamageType
 {
     Physical,
     Fire,
