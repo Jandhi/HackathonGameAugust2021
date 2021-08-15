@@ -1,8 +1,8 @@
 ﻿using System;
 using SadConsole;
-using Game.UI;
 using Microsoft.Xna.Framework;
 using Console = SadConsole.Console;
+using Game.UI;
 
 namespace Game
 {
@@ -23,10 +23,7 @@ namespace Game
 
         static void Init()
         {
-            var console = new Button("this is a button", () => {
-                
-            });
-
+            var console = new Button("Usman sits when he pees.", () => {});
             SadConsole.Global.CurrentScreen = console;
         }
     }

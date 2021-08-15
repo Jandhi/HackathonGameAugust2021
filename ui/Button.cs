@@ -1,5 +1,6 @@
 using SadConsole.Input;
 using System;
+using Microsoft.Xna.Framework;
 
 namespace Game.UI
 {
@@ -19,7 +20,8 @@ namespace Game.UI
         protected override void OnMouseLeftClicked(MouseConsoleState state)
         {
             base.OnMouseLeftClicked(state);
-            Action();
+            Action();   
+            Print(0, 0, Text, Color.Orange, Color.Purple);
         }
     }
 }
