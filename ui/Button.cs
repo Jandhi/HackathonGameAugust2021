@@ -53,7 +53,7 @@ namespace Game.UI
             {
                 for (var y = 0; y < Height; y++)
                 {
-                   if ( x == 0 && y == 0 )
+                    if ( x == 0 && y == 0 )
                     {
                         SetGlyph (x, y, 218, borderColor);
                     }
