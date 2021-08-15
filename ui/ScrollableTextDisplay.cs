@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 
 namespace Game.UI
 {
@@ -22,24 +23,40 @@ namespace Game.UI
         public int ScrollPosition { get; set; } = 0;
         public int MaxScrollPosition => Math.Max(0, Lines.Count - Height); 
 
-        public Button ScrollUpButton { get; }
-        public Button ScrollDownButton { get; }
+        public Button ScrollUpButton { get; set; }
+        public Button ScrollDownButton { get; set; }
 
         public ScrollableTextDisplay(int width, int height, string text) : base(width, height)
         {
             Text = text;
             UsePrintProcessor = true; // allow for coloring
-
+            
+            SetupButtons();
             Draw();
+        }
+
+        public void SetupButtons()
+        {
+            ScrollUpButton = new Button("^", () => {
+                if(ScrollPosition > 0) ScrollPosition--;
+                Draw();
+            });
+            ScrollUpButton.Position = new Point(Width - 1, 0);
+            ScrollUpButton.Parent = this;
+
+            ScrollDownButton = new Button("v", () => {
+                if(ScrollPosition < MaxScrollPosition) ScrollPosition++;
+                Draw();
+            });
+            ScrollDownButton.Position = new Point(Width - 1, Height - 1);
+            ScrollDownButton.Parent = this;
         }
 
         public void Draw()
         {
-            var lineNum = 0;
-            foreach(var line in Lines)
+            for(var i = 0; i < Height && ScrollPosition + i < Lines.Count; i++)
             {
-                Print(0, lineNum, line);
-                lineNum++;
+                Print(0, i, Lines[ScrollPosition + i]);
             }
         }
 
