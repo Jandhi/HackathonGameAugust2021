@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Game.Combat.Event;
 
 namespace Game.Combat{
     public class Combat{
@@ -47,6 +48,11 @@ namespace Game.Combat{
         public int GetInitiative(Entity entity)
         {
             return 0;
+        }
+
+        public void BroadcastCombatEvent(CombatEvent ev)
+        {
+            ev.Broadcast(Combatants);
         }
     }
 }
