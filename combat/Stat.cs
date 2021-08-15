@@ -1,5 +1,5 @@
 namespace Game.Combat{
-    public enum Stats
+    public enum Stat
     {
         Health,
         Stamina,

@@ -5,9 +5,9 @@ namespace Game.Combat {
     public class Entity : ICombatEventListener {
 
         public string Name { get; }
-        public Dictionary<Stats, int> Stats { get; } = new Dictionary<Stats, int>();
+        public Dictionary<Stat, int> Stats { get; } = new Dictionary<Stat, int>();
 
-        public Entity(string name, Dictionary<Stats, int> stats){
+        public Entity(string name, Dictionary<Stat, int> stats){
             Name = name;
             Stats = stats;
         }
