@@ -1,14 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "mUaCgPEyaphE+6Q1Dno6nwezM3M97bX8KPAvjvnL6fQ3Rsr+eT9EerMfreGzjfYwMFvAqigLrH0j/RYZLlD15Q==",
+  "dgSpecHash": "KWf2N3uV9fSUM+bFtVedWLPlFYNqLnlqunSPTMXt6+yDqiOD1chze7YKbufCc/rCVCAQJxefm6HqV5yqsmWQWw==",
   "success": true,
-  "projectFilePath": "D:\\Google Drive\\Code\\Hackathons\\Game\\Game.csproj",
+  "projectFilePath": "C:\\Users\\legob\\VSCode\\HackathonGameAugust2021\\Game.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\Jan\\.nuget\\packages\\monogame.framework.desktopgl\\3.8.0.1641\\monogame.framework.desktopgl.3.8.0.1641.nupkg.sha512",
-    "C:\\Users\\Jan\\.nuget\\packages\\newtonsoft.json\\11.0.2\\newtonsoft.json.11.0.2.nupkg.sha512",
-    "C:\\Users\\Jan\\.nuget\\packages\\sadconsole\\8.99.3\\sadconsole.8.99.3.nupkg.sha512",
-    "C:\\Users\\Jan\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\3.1.10\\microsoft.aspnetcore.app.ref.3.1.10.nupkg.sha512",
-    "C:\\Users\\Jan\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\3.1.15\\microsoft.netcore.app.host.win-x64.3.1.15.nupkg.sha512"
+    "C:\\Users\\legob\\.nuget\\packages\\monogame.framework.desktopgl\\3.8.0.1641\\monogame.framework.desktopgl.3.8.0.1641.nupkg.sha512",
+    "C:\\Users\\legob\\.nuget\\packages\\newtonsoft.json\\11.0.2\\newtonsoft.json.11.0.2.nupkg.sha512",
+    "C:\\Users\\legob\\.nuget\\packages\\sadconsole\\8.99.3\\sadconsole.8.99.3.nupkg.sha512"
   ],
   "logs": []
 }
