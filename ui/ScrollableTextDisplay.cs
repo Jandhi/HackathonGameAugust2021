@@ -4,8 +4,9 @@ using Microsoft.Xna.Framework;
 
 namespace Game.UI
 {
-    public class ScrollableTextDisplay : SadConsole.Console, IDrawable
+    public class ScrollableTextDisplay : SadConsole.Console, IUIElement
     {
+        public Theme Theme { get; }
         private string text = "";
         public string Text 
         { 
@@ -26,10 +27,11 @@ namespace Game.UI
         public Button ScrollUpButton { get; set; }
         public Button ScrollDownButton { get; set; }
 
-        public ScrollableTextDisplay(int width, int height, string text) : base(width, height)
+        public ScrollableTextDisplay(int width, int height, string text, Theme theme = null) : base(width, height)
         {
             Text = text;
             UsePrintProcessor = true; // allow for coloring
+            Theme = theme ?? Theme.CurrentTheme;
             
             SetupButtons();
             Draw();
@@ -37,17 +39,20 @@ namespace Game.UI
 
         public void SetupButtons()
         {
+            var buttonTheme = new Theme(Theme);
+            buttonTheme.TextColor = Theme.MainColor;
+
             ScrollUpButton = new Button("^", () => {
                 if(ScrollPosition > 0) ScrollPosition--;
                 Draw();
-            });
+            }, buttonTheme);
             ScrollUpButton.Position = new Point(Width - 1, 0);
             ScrollUpButton.Parent = this;
 
             ScrollDownButton = new Button("v", () => {
                 if(ScrollPosition < MaxScrollPosition) ScrollPosition++;
                 Draw();
-            });
+            }, buttonTheme);
             ScrollDownButton.Position = new Point(Width - 1, Height - 1);
             ScrollDownButton.Parent = this;
         }
@@ -58,6 +63,14 @@ namespace Game.UI
             {
                 Print(0, i, Lines[ScrollPosition + i]);
             }
+
+            for(var y = 1; y < Height - 1; y++) 
+            {
+                Print(Width - 1, y, ".", Theme.MainColor);
+            }
+
+            var heightRatio = (ScrollPosition * (Height - 3) / MaxScrollPosition);
+            Print(Width - 1, heightRatio + 1, "|", Theme.MainColor);
         }
 
         private List<string> CalculateLines()

@@ -12,9 +12,9 @@ namespace Game.UI
 
         public override void Draw()
         {
-            Print(1, 1, Text);
+            Print(1, 1, Text, Theme.TextColor);
 
-            var borderColor = IsHovered ? HoveredColor : DefaultColor;
+            var borderColor = IsHovered ? Theme.HoveredColor : Theme.AccentColor;
 
             for (var x = 0; x < Width; x++)
             {
@@ -31,23 +31,23 @@ namespace Game.UI
                     {
                         SetGlyph (x, y, 218, borderColor);
                     }
-                    else if ( x == Width-1 && y == 0)
+                    else if ( x == Width - 1 && y == 0)
                     {
                         SetGlyph (x, y, 191, borderColor);
                     }
-                    else if ( x== 0 && y == Height-1)
+                    else if ( x == 0 && y == Height - 1)
                     {
                         SetGlyph (x, y, 192, borderColor);
                     }
-                    else if ( x == Width-1 && y == Height-1)
+                    else if ( x == Width - 1 && y == Height - 1)
                     {
                         SetGlyph (x, y, 217, borderColor);
                     }
-                    else if (y == 0 || y== Height-1)
+                    else if (y == 0 || y == Height - 1)
                     {
                         SetGlyph (x, y, 196, borderColor);
                     }
-                    else if (x == 0 || x== Width-1)
+                    else if (x == 0 || x == Width - 1)
                     {
                         SetGlyph (x, y, 179, borderColor);
                     }

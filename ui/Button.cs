@@ -4,24 +4,21 @@ using Microsoft.Xna.Framework;
 
 namespace Game.UI
 {
-    public class Button : SadConsole.Console, IDrawable
+
+    public class Button : SadConsole.Console, IUIElement
     {
         public string Text { get; }
         public Action Action { get; }
-        public Color DefaultColor { get; }= Color.White;
-        public Color HoveredColor { get; } = Color.Red;
+        public Theme Theme { get; }
         public bool IsHovered { get; set; } = false;
 
-        public Button(string text, Action action) : base(text.Length, 1)
-        {
-            Action = action;
-            Text = text;
-            Draw();
-        }
+        public Button(string text, Action action, Theme theme = null) : this(text, action, text.Length, 1, theme)
+        {}
 
 
-        public Button(string text, Action action, int width, int height) : base(width, height)
+        public Button(string text, Action action, int width, int height, Theme theme = null) : base(width, height)
         {
+            Theme = theme ?? Theme.CurrentTheme;
             Action = action;
             Text = text;
             Draw();
@@ -47,7 +44,7 @@ namespace Game.UI
 
         public virtual void Draw()
         {
-            Print(0, 0, Text, IsHovered ? HoveredColor : DefaultColor);
+            Print(0, 0, Text, IsHovered ? Theme.HoveredColor : Theme.TextColor);
         }
     }
 }
