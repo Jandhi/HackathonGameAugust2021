@@ -70,7 +70,15 @@ namespace Game.UI
             }
 
             var heightRatio = (ScrollPosition * (Height - 3) / MaxScrollPosition);
-            Print(Width - 1, heightRatio + 1, "|", Theme.MainColor);
+            if(ScrollPosition > 0 && heightRatio == 0) // Don't show highest scroll for non-highest line
+            {
+                heightRatio = 1;
+            }
+            if(ScrollPosition != MaxScrollPosition && heightRatio == Height - 3) // Don't show lowest scroll for non-lowest line
+            {
+                heightRatio = Height - 4;
+            }
+            Print(Width - 1, heightRatio + 1, "X", Theme.MainColor);
         }
 
         private List<string> CalculateLines()
