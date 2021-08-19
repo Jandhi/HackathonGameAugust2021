@@ -28,29 +28,29 @@ namespace Game.UI
         public void DrawCell(int x, int y, Color borderColor)
         {
             if ( x == 0 && y == 0 )
-                    {
-                        SetGlyph (x, y, 218, borderColor);
-                    }
-                    else if ( x == Width - 1 && y == 0)
-                    {
-                        SetGlyph (x, y, 191, borderColor);
-                    }
-                    else if ( x == 0 && y == Height - 1)
-                    {
-                        SetGlyph (x, y, 192, borderColor);
-                    }
-                    else if ( x == Width - 1 && y == Height - 1)
-                    {
-                        SetGlyph (x, y, 217, borderColor);
-                    }
-                    else if (y == 0 || y == Height - 1)
-                    {
-                        SetGlyph (x, y, 196, borderColor);
-                    }
-                    else if (x == 0 || x == Width - 1)
-                    {
-                        SetGlyph (x, y, 179, borderColor);
-                    }
+                {
+                    SetGlyph (x, y, 218, borderColor);
+                }
+                else if ( x == Width - 1 && y == 0)
+                {
+                    SetGlyph (x, y, 191, borderColor);
+                }
+                else if ( x == 0 && y == Height - 1)
+                {
+                    SetGlyph (x, y, 192, borderColor);
+                }
+                else if ( x == Width - 1 && y == Height - 1)
+                {
+                    SetGlyph (x, y, 217, borderColor);
+                }
+                else if (y == 0 || y == Height - 1)
+                {
+                    SetGlyph (x, y, 196, borderColor);
+                }
+                else if (x == 0 || x == Width - 1)
+                {
+                    SetGlyph (x, y, 179, borderColor);
+                }
         }
     }
 }
