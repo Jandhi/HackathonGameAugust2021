@@ -25,33 +25,28 @@ namespace Game
         {
             var console = new Console(80, 25);
             
-            var layout = new Layout(80, 25, 2, 2);
+            var layout = new Layout(80, 25, 3, 3);
             layout.Parent = console;
-            layout.YSegments[1].IsDynamic = false;
-            layout.YSegments[1].Length = 5;
+            layout.YSegments[2].IsDynamic = false;
+            layout.YSegments[2].Length = 5;
             layout.XSegments[0].Weight = 2;
             layout.CalculateDimensions();
 
-            Console console1 = null;
             layout.Add((width, height) => {
-                console1 = new Console(width, height);
-                return console1;
-            });
-            console1.FillWithRandomGarbage();
+                return new Console(width, height);
+            }).Fill(Color.Red, Color.Red, 0);
 
-            Console console2 = null;
             layout.Add((width, height) => {
-                console2 = new Console(width, height);
-                return console2;
-            }, new Point(1, 0));
-            console2.Print(0, 0, "This is a console");
+                return new Console(width, height);
+            }, new Point(1, 0), 1, 2).Fill(Color.Blue, Color.Blue, 0);
 
-            Console console3 = null;
             layout.Add((width, height) => {
-                console3 = new Console(width, height);
-                return console3;
-            }, new Point(0, 1), 2);
-            console3.FillWithRandomGarbage();
+                return new Console(width, height);
+            }, new Point(2, 0), 1, 2).Fill(Color.Yellow, Color.Yellow, 0);
+
+            layout.Add((width, height) => {
+                return new Console(width, height);
+            }, new Point(0, 2), 3).Fill(Color.Green, Color.Green, 0);
             
             SadConsole.Global.CurrentScreen = console;
         }

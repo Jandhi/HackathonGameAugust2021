@@ -43,7 +43,7 @@ namespace Game.UI
             CalculateDimensions();
         }
 
-        public void Add(Func<int, int, SadConsole.Console> ConsoleConstructor, Point gridPosition = default, int gridWidth = 1, int gridHeight = 1)
+        public SadConsole.Console Add(Func<int, int, SadConsole.Console> ConsoleConstructor, Point gridPosition = default, int gridWidth = 1, int gridHeight = 1)
         {
             var xPosition = 0;
             for(var x = 0; x < gridPosition.X; x++)
@@ -72,6 +72,8 @@ namespace Game.UI
             var console = ConsoleConstructor(width, height);
             console.Position = new Point(xPosition, yPosition);
             console.Parent = this;
+
+            return console;
         }
 
         public void CalculateDimensions()
