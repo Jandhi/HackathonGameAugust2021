@@ -22,7 +22,7 @@ namespace Game.UI
         }
         public List<string> Lines { get; set; }
         public int ScrollPosition { get; set; } = 0;
-        public int MaxScrollPosition => Math.Max(0, Lines.Count - Height); 
+        public int MaxScrollPosition => Math.Max(0, Lines.Count - Height - 1); 
 
         public Button ScrollUpButton { get; set; }
         public Button ScrollDownButton { get; set; }
@@ -104,7 +104,7 @@ namespace Game.UI
                 {
                     line += character;
 
-                    if(line.Length == maxLineLength)
+                    if(ColorStrings.GetLength(line) == maxLineLength)
                     {
                         newLine();
                     }

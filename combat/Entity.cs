@@ -5,6 +5,7 @@ namespace Game.Combat {
     public class Entity : ICombatEventListener {
 
         public string Name { get; }
+        public virtual string Look { get; }
         public Dictionary<Stat, int> Stats { get; } = new Dictionary<Stat, int>();
 
         public Entity(string name, Dictionary<Stat, int> stats){
