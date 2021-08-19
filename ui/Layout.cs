@@ -69,8 +69,6 @@ namespace Game.UI
                 height += YSegments[y + gridPosition.Y].Length;
             }
 
-            System.Console.Write($"{xPosition} {yPosition} {width} {height}");
-
             var console = ConsoleConstructor(width, height);
             console.Position = new Point(xPosition, yPosition);
             console.Parent = this;
