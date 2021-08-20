@@ -24,12 +24,29 @@ namespace Game
         static void Init()
         {
             var console = new Console(80, 25);
-
-            var text = "";
-            for(var i = 0; i < 100; i++) text += (char) (new Random().Next() % 24 + 'a');
             
-            var display = new ScrollableTextDisplay(5, 10, text);
-            display.Parent = console;
+            var layout = new Layout(80, 25, 3, 3);
+            layout.Parent = console;
+            layout.YSegments[2].IsDynamic = false;
+            layout.YSegments[2].Length = 5;
+            layout.XSegments[0].Weight = 2;
+            layout.CalculateDimensions();
+
+            layout.Add((width, height) => {
+                return new Console(width, height);
+            }).Fill(Color.Red, Color.Red, 0);
+
+            layout.Add((width, height) => {
+                return new Console(width, height);
+            }, new Point(1, 0), 1, 2).Fill(Color.Blue, Color.Blue, 0);
+
+            layout.Add((width, height) => {
+                return new Console(width, height);
+            }, new Point(2, 0), 1, 2).Fill(Color.Yellow, Color.Yellow, 0);
+
+            layout.Add((width, height) => {
+                return new Console(width, height);
+            }, new Point(0, 2), 3).Fill(Color.Green, Color.Green, 0);
             
             SadConsole.Global.CurrentScreen = console;
         }
