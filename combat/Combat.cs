@@ -1,14 +1,47 @@
 using System.Collections.Generic;
 using System.Linq;
 using Game.Combat.Event;
+using Game.Combat.Action;
 
-namespace Game.Combat{
-    public class Combat{
+namespace Game.Combat {
+    public enum Side
+    {
+        PLAYER,
+        ENEMY,
+        NONE
+    }
+
+    public class Combat {
         public List<Entity> Combatants { get; }
         public List<Entity> Initiative { get; set; }
+        public Queue<ICombatAction> Actions { get; set; }
 
         public Combat(List<Entity> combatants) {
             Combatants = combatants;
+        }
+
+        public Side GetSide(Entity entity)
+        {
+            if(Combatants.Contains(entity))
+            {
+                if(Combatants.IndexOf(entity) < 4)
+                {
+                    return Side.PLAYER;
+                }
+                else 
+                {
+                    return Side.ENEMY;
+                }
+            }
+            else
+            {
+                return Side.NONE;
+            }
+        }
+
+        public bool IsOnSameSide(Entity entity1, Entity entity2)
+        {
+            return GetSide(entity1) == GetSide(entity2);
         }
 
         public Entity GetNextInInitiative()

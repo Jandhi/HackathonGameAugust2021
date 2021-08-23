@@ -5,37 +5,39 @@ using Microsoft.Xna.Framework;
 
 namespace Game.UI
 {
-    public class LayoutSegment
+    public class GridLayoutSegment
     {
         public bool IsDynamic { get; set; }
         public int Length { get; set; }
         public int Weight { get; set; }
     }
 
-    public class Layout : SadConsole.Console
+    public class GridLayout : SadConsole.Console
     {
         public int GridWidth { get; }
         public int GridHeight { get; }
-        public LayoutSegment[] XSegments { get; }
-        public LayoutSegment[] YSegments { get; }
+        public GridLayoutSegment[] XSegments { get; }
+        public GridLayoutSegment[] YSegments { get; }
+        public Boolean DistributeExtra { get; }
 
-        public Layout(int width, int height, int gridWidth, int gridHeight) : base(width, height)
+        public GridLayout(int width, int height, int gridWidth, int gridHeight, bool distributeExtra = true) : base(width, height)
         {
             GridWidth = gridWidth;
             GridHeight = gridHeight;
-            XSegments = new LayoutSegment[gridWidth];
-            YSegments = new LayoutSegment[gridHeight];
+            XSegments = new GridLayoutSegment[gridWidth];
+            YSegments = new GridLayoutSegment[gridHeight];
+            DistributeExtra = distributeExtra;
 
             for(var x = 0; x < gridWidth; x++)
             {
-                XSegments[x] = new LayoutSegment();
+                XSegments[x] = new GridLayoutSegment();
                 XSegments[x].IsDynamic = true;
                 XSegments[x].Weight = 1;
             }
 
             for(var y = 0; y < gridHeight; y++)
             {
-                YSegments[y] = new LayoutSegment();
+                YSegments[y] = new GridLayoutSegment();
                 YSegments[y].IsDynamic = true;
                 YSegments[y].Weight = 1;
             }
@@ -43,7 +45,7 @@ namespace Game.UI
             CalculateDimensions();
         }
 
-        public SadConsole.Console Add(Func<int, int, SadConsole.Console> ConsoleConstructor, Point gridPosition = default, int gridWidth = 1, int gridHeight = 1)
+        public Rectangle GetGridDimensions(Point gridPosition = default, int gridWidth = 1, int gridHeight = 1)
         {
             var xPosition = 0;
             for(var x = 0; x < gridPosition.X; x++)
@@ -69,8 +71,18 @@ namespace Game.UI
                 height += YSegments[y + gridPosition.Y].Length;
             }
 
-            var console = ConsoleConstructor(width, height);
-            console.Position = new Point(xPosition, yPosition);
+            return new Rectangle(xPosition, yPosition, width, height);
+        }
+
+        public T Add<T>(
+            Func<int, int, T> ConsoleConstructor, 
+            int x = 0, int y = 0, int gridWidth = 1, int gridHeight = 1
+            ) where T : SadConsole.Console
+        {
+            var dimensions = GetGridDimensions(new Point(x, y), gridWidth, gridHeight);
+
+            var console = ConsoleConstructor(dimensions.Width, dimensions.Height);
+            console.Position = new Point(dimensions.X, dimensions.Y);
             console.Parent = this;
 
             return console;
@@ -82,7 +94,7 @@ namespace Game.UI
             CalculateDimension(YSegments, Height);
         }
 
-        public void CalculateDimension(LayoutSegment[] segments, int dimensionLength)
+        public void CalculateDimension(GridLayoutSegment[] segments, int dimensionLength)
         {
             var slack = dimensionLength;
             
@@ -112,7 +124,7 @@ namespace Game.UI
 
             //Spread leftovers
             var index = 0;
-            while(slack - slackUsed > 0 && dynamicSegments.Count > 0)
+            while(DistributeExtra && slack - slackUsed > 0 && dynamicSegments.Count > 0)
             {
                 var segment = dynamicSegments[index % dynamicSegments.Count];
                 segment.Length += 1;

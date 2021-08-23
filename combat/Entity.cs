@@ -6,16 +6,17 @@ namespace Game.Combat {
 
         public string Name { get; }
         public virtual string Look { get; }
-        public Dictionary<Stat, int> Stats { get; } = new Dictionary<Stat, int>();
+        public Dictionary<Stat, float> Stats { get; } = new Dictionary<Stat, float>();
+        public List<ICombatEventListener> Passives { get; } = new List<ICombatEventListener>();
 
-        public Entity(string name, Dictionary<Stat, int> stats){
+        public Entity(string name, Dictionary<Stat, float> stats){
             Name = name;
             Stats = stats;
         }
 
         public void Receive(CombatEvent ev) 
         {
-            // do something with the event
+            ev.Broadcast(Passives);
         }
     }
 }

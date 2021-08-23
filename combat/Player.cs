@@ -6,7 +6,7 @@ namespace Game.Combat
     {
         public override string Look => "@";
 
-        public Player(string name, Dictionary<Stat,int> stats) : base(name, stats)
+        public Player(string name, Dictionary<Stat,float> stats) : base(name, stats)
         {
             
         }
