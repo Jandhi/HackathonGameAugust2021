@@ -7,13 +7,17 @@ namespace Game.Combat.Ability
     {
         public string Name { get; }
 
-        public void UseAbility(Combat combat, Entity caster, List<Entity> targets)
+        public void Use(int depth, Combat combat, Entity caster, List<Entity> targets)
         {
-            combat.BroadcastCombatEvent(new UseAbilityEvent(0, combat, caster, this));
-            ExecuteAbility(combat, caster, targets);
+            var useAbilityEvent = new UseAbilityEvent(depth, combat, caster, this);
+            useAbilityEvent.Broadcast();
+            
+            if(useAbilityEvent.IsGoingThrough) {
+                Execute(depth, combat, caster, targets);
+            }
         }
 
-        public abstract void ExecuteAbility(Combat combat, Entity caster, List<Entity> targets);
+        public abstract void Execute(int depth, Combat combat, Entity caster, List<Entity> targets);
         
     }
 }

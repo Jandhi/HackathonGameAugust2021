@@ -5,19 +5,17 @@ namespace Game.Combat.Action
        
         public Entity Reciever {get;}
         public Stat AffectedStat {get;}
-        public int StatAfter {get;}
-        public int StatBefore {get;}
+        public float StatAfter {get;}
+        public float StatBefore {get;}
        
 
 
-        public StatChange ( Entity reciever, Stat affectedStat, int statBefore, int statAfter)
+        public StatChange ( Entity reciever, Stat affectedStat, float statBefore, float statAfter)
         {
-
             Reciever = reciever;
             AffectedStat = affectedStat;
             StatBefore = statBefore;
             StatAfter = statAfter;
-
         }
 
         public void Do()
