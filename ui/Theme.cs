@@ -10,8 +10,7 @@ namespace Game.UI
         public Color MainColor { get; set; } = Color.Gray;
         public Color AccentColor { get; set; } = Color.Gray;
         public Color HoveredColor { get; set; } = Color.Red;
-
-        public Theme() {}
+        private Theme() {}
         public Theme(Theme theme)
         {
             TextColor = theme.TextColor;

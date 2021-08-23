@@ -4,35 +4,17 @@ using Microsoft.Xna.Framework;
 
 namespace Game.UI
 {
-    public class ScrollableTextDisplay : SadConsole.Console, IUIElement
+    public class ScrollableTextDisplay : TextDisplay
     {
-        public Theme Theme { get; }
-        private string text = "";
-        public string Text 
-        { 
-            get 
-            {
-                return text;
-            }
-            set 
-            {
-                text = value;
-                Lines = CalculateLines();
-            } 
-        }
-        public List<string> Lines { get; set; }
+        public override int MaxLineLength => base.MaxLineLength - 1;
         public int ScrollPosition { get; set; } = 0;
         public int MaxScrollPosition => Math.Max(0, Lines.Count - Height - 1); 
 
         public Button ScrollUpButton { get; set; }
         public Button ScrollDownButton { get; set; }
 
-        public ScrollableTextDisplay(int width, int height, string text, Theme theme = null) : base(width, height)
+        public ScrollableTextDisplay(string text, int width, int height, bool doWrapping, Theme theme = null) : base(text, width, height, doWrapping, theme)
         {
-            Text = text;
-            UsePrintProcessor = true; // allow for coloring
-            Theme = theme ?? Theme.CurrentTheme;
-            
             SetupButtons();
             Draw();
         }
@@ -57,7 +39,7 @@ namespace Game.UI
             ScrollDownButton.Parent = this;
         }
 
-        public void Draw()
+        public override void Draw()
         {
             Clear();
 
@@ -81,44 +63,6 @@ namespace Game.UI
                 heightRatio = Height - 4;
             }
             Print(Width - 1, heightRatio + 1, "X", Theme.MainColor);
-        }
-
-        private List<string> CalculateLines()
-        {
-
-            var lines = new List<string>();
-            var line = "";
-            var maxLineLength = Width - 1;
-
-            void newLine() 
-            {
-                lines.Add(line);
-                line = "";
-            }
-
-            foreach (var character in Text)
-            {
-                if(character == '\n')
-                {
-                    newLine();
-                }
-                else
-                {
-                    line += character;
-
-                    if(ColorStrings.GetLength(line) == maxLineLength)
-                    {
-                        newLine();
-                    }
-                }
-            }
-
-            if(line != "")
-            {
-                newLine();
-            }
-
-            return lines;
         }
     }
 }

@@ -17,7 +17,7 @@ namespace Game.UI
 
         public BorderedLayout(int width, int height, Theme theme = null) : base(width, height)
         {
-            Theme = theme ?? new Theme();
+            Theme = theme ?? Theme.CurrentTheme;
             Draw();
         }
 

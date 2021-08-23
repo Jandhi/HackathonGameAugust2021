@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Game.Combat.Event;
 using Game.Combat.Action;
+using Game.UI.Log;
 
 namespace Game.Combat {
     public enum Side
@@ -15,6 +16,7 @@ namespace Game.Combat {
         public List<Entity> Combatants { get; }
         public List<Entity> Initiative { get; set; }
         public Queue<ICombatAction> Actions { get; set; }
+        public Log Log { get; } = new Log();
 
         public Combat(List<Entity> combatants) {
             Combatants = combatants;
