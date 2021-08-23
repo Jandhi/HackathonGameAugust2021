@@ -59,6 +59,8 @@ namespace Game.UI
 
         public void Draw()
         {
+            Clear();
+
             for(var i = 0; i < Height && ScrollPosition + i < Lines.Count; i++)
             {
                 Print(0, i, Lines[ScrollPosition + i]);
@@ -69,7 +71,7 @@ namespace Game.UI
                 Print(Width - 1, y, ".", Theme.MainColor);
             }
 
-            var heightRatio = (ScrollPosition * (Height - 3) / MaxScrollPosition);
+            var heightRatio = MaxScrollPosition == 0 ? MaxScrollPosition : (ScrollPosition * (Height - 3) / MaxScrollPosition);
             if(ScrollPosition > 0 && heightRatio == 0) // Don't show highest scroll for non-highest line
             {
                 heightRatio = 1;
