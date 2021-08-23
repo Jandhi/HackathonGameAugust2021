@@ -4,7 +4,7 @@ namespace Game.UI.Log
 {
     public class Log
     {
-        public List<string> Contents { get; }
+        public List<string> Contents { get; } = new List<string>();
         public int MaxLines { get; }
         public List<ILogListener> Listeners { get; } = new List<ILogListener>();
 
