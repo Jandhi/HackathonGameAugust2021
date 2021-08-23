@@ -17,9 +17,9 @@ namespace Game.UI.Combat
                 PositionsGrid.Add((width, height) => new PositionDisplay(width, height), i, 0);
             }
 
-            Add((width, height) => new SadConsole.Console(width, height)).Fill(Color.Blue, Color.Blue, 0);
-            Add((width, height) => new SadConsole.Console(width, height), 0, 2).Fill(Color.Yellow, Color.Yellow, 0);
-            Add((width, height) => new SadConsole.Console(width, height), 1, 0, 1, 3).Fill(Color.Gray, Color.Gray, 0);
+            Add((width, height) => new BorderedLayout(width, height));
+            Add((width, height) => new BorderedLayout(width, height), 0, 2);
+            Add((width, height) => new BorderedLayout(width, height), 1, 0, 1, 3);
 
             
         }

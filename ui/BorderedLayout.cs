@@ -3,24 +3,40 @@ using Microsoft.Xna.Framework;
 
 namespace Game.UI
 {
-    public class BorderedButton : Button
+    public class BorderedLayout : BorderedLayout<SadConsole.Console>
     {
-        public BorderedButton(string text, Action action) : base(text, action, text.Length + 2, 3)
+        public BorderedLayout(int width, int height, Theme theme = null) : base(width, height, theme)
         {
+        }
+    }
+
+    public class BorderedLayout<T> : SadConsole.Console, IUIElement where T : SadConsole.Console
+    {
+        public T Containee { get; set; }
+        public Theme Theme { get; }
+
+        public BorderedLayout(int width, int height, Theme theme = null) : base(width, height)
+        {
+            Theme = theme ?? new Theme();
             Draw();
         }
 
-        public override void Draw()
+        public TAdded Add<TAdded>(Func<int, int, TAdded> consoleConstructor) where TAdded : T
         {
-            Print(1, 1, Text, Theme.TextColor);
+            var containee = consoleConstructor(Width - 2, Height - 2);
+            containee.Position = new Point(1, 1);
+            containee.Parent = this;
+            Containee = containee;
+            return containee;
+        }
 
-            var borderColor = IsHovered ? Theme.HoveredColor : Theme.AccentColor;
-
+        public void Draw()
+        {
             for (var x = 0; x < Width; x++)
             {
                 for (var y = 0; y < Height; y++)
                 {
-                    DrawCell(x, y, borderColor);
+                    DrawCell(x, y, Theme.AccentColor);
                 }
             }
         }

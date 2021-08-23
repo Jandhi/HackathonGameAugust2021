@@ -10,8 +10,8 @@ namespace Game
 {
     class Program
     {
-        public static readonly int GAME_WIDTH = 120;
-        public static readonly int GAME_HEIGHT = 40;
+        public static readonly int GAME_WIDTH = 150;
+        public static readonly int GAME_HEIGHT = 50;
 
         static void Main()
         {

@@ -11,10 +11,10 @@ namespace Game.UI.Combat
         {
             SetupLayout();
 
-            var healthBarContainer = Add((width, height) => new GravityLayout(width, height), 0, 3);
+            var healthBarContainer = Add((width, height) => new GravityLayout<HealthBar>(width, height), 0, 3);
             HealthBar = healthBarContainer.Add((width, height) => new HealthBar(10, 10, width), 2, true, LayoutGravity.CENTER);
 
-            var nameContainer = Add((width, height) => new GravityLayout(width, height), 0, 2);
+            var nameContainer = Add((width, height) => new GravityLayout<SadConsole.Console>(width, height), 0, 2);
             var name = nameContainer.Add((width, height) => new SadConsole.Console(width, height), 2, true, LayoutGravity.CENTER);
             name.Print(0, 0, "name");
         }

@@ -18,15 +18,15 @@ namespace Game.UI
         public int GridHeight { get; }
         public GridLayoutSegment[] XSegments { get; }
         public GridLayoutSegment[] YSegments { get; }
-        public Boolean DistributeExtra { get; }
+        public Boolean IsDistributingExtraSpace { get; }
 
-        public GridLayout(int width, int height, int gridWidth, int gridHeight, bool distributeExtra = true) : base(width, height)
+        public GridLayout(int width, int height, int gridWidth, int gridHeight, bool isDistributingExtraSpace = true) : base(width, height)
         {
             GridWidth = gridWidth;
             GridHeight = gridHeight;
             XSegments = new GridLayoutSegment[gridWidth];
             YSegments = new GridLayoutSegment[gridHeight];
-            DistributeExtra = distributeExtra;
+            IsDistributingExtraSpace = isDistributingExtraSpace;
 
             for(var x = 0; x < gridWidth; x++)
             {
@@ -124,7 +124,7 @@ namespace Game.UI
 
             //Spread leftovers
             var index = 0;
-            while(DistributeExtra && slack - slackUsed > 0 && dynamicSegments.Count > 0)
+            while(IsDistributingExtraSpace && slack - slackUsed > 0 && dynamicSegments.Count > 0)
             {
                 var segment = dynamicSegments[index % dynamicSegments.Count];
                 segment.Length += 1;

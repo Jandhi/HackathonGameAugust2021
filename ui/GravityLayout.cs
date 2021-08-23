@@ -9,16 +9,22 @@ namespace Game.UI
         TOP, CENTER, BOTTOM
     }
 
-    public class GravityLayout : SadConsole.Console
+    public class GravityLayout : GravityLayout<SadConsole.Console>
     {
-        public SadConsole.Console Containee { get; set; }
+        public GravityLayout(int width, int height) : base(width, height)
+        {}
+    }
+
+    public class GravityLayout<T> : SadConsole.Console where T : SadConsole.Console
+    {
+        public T Containee { get; set; }
 
         public GravityLayout(int width, int height) : base(width, height)
         {}
 
-        public T Add<T>(Func<int, int, T> consoleConstructor, 
+        public TAdded Add<TAdded>(Func<int, int, TAdded> consoleConstructor, 
             int fixedWidth = -1, bool xBufferIsFixed = false, LayoutGravity xGravity = LayoutGravity.TOP, 
-            int fixedHeight = -1, bool yBufferIsFixed = false, LayoutGravity yGravity = LayoutGravity.TOP) where T : SadConsole.Console
+            int fixedHeight = -1, bool yBufferIsFixed = false, LayoutGravity yGravity = LayoutGravity.TOP) where TAdded : T
         {
             if(Width < fixedWidth || Height < fixedHeight) 
             {
