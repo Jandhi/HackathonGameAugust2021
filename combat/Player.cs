@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Game.UI;
 
 namespace Game.Combat
 {
@@ -6,7 +7,7 @@ namespace Game.Combat
     {
         public override string Look => "@";
 
-        public Player(string name, Dictionary<Stat,float> stats) : base(name, stats)
+        public Player(ColoredString name, Dictionary<Stat,float> stats) : base(name, stats)
         {
             
         }

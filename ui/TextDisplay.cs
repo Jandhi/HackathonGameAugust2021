@@ -28,6 +28,8 @@ namespace Game.UI
             Theme = theme ?? Theme.CurrentTheme;
             Text = text;
             UsePrintProcessor = true; // allow for coloring
+
+            Draw();
         }
 
         private List<string> CalculateLines()
@@ -76,6 +78,10 @@ namespace Game.UI
                 {
                     line += word;
                 }
+            }
+
+            if(line != "") {
+                lines.Add(line);
             }
 
             return lines;

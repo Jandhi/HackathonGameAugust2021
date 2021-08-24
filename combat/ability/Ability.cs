@@ -1,12 +1,25 @@
 using System.Collections.Generic;
 using Game.Combat.Event;
+using System.Linq;
 
 namespace Game.Combat.Ability
 {
+    public enum TargetType
+    {
+        Self, Allies, Opponents, Any
+    }
+    
+    public enum Position
+    {
+        Front, MidFront, MidBack, Back
+    }
+
     public abstract class Ability
     {
         public string Name { get; }
-
+        public TargetType Target { get; }
+        public List<Position> TargetPositions { get; }
+        public List<Position> CasterPositions { get; }
         public void Use(int depth, Combat combat, Entity caster, List<Entity> targets)
         {
             var useAbilityEvent = new UseAbilityEvent(depth, combat, caster, this);
@@ -18,6 +31,57 @@ namespace Game.Combat.Ability
         }
 
         public abstract void Execute(int depth, Combat combat, Entity caster, List<Entity> targets);
+
+        public bool CanCastFromPosition(Entity caster, Combat combat)
+        {
+            var isInPosition = CasterPositions.Contains(IndexToPosition(combat.Combatants.IndexOf(caster)));
+            var hasTargets = GetValidTargets(caster, combat).Count > 0;
+
+            return isInPosition && hasTargets;
+        }
+        public List<int> GetValidTargets(Entity caster, Combat combat)
+        {
+            var side = combat.GetSide(caster);
+            var validTargets = new List<int>();
+
+            if(Target == TargetType.Self)
+            {
+                validTargets.Add(combat.Combatants.IndexOf(caster));
+            }
+
+            foreach(var position in TargetPositions)
+            {
+                if(Target == TargetType.Any || (side == Side.PLAYER && Target == TargetType.Allies) || (side == Side.ENEMY && Target == TargetType.Opponents) )
+                {
+                    validTargets.Add( PositionToIndex(position, Side.PLAYER) );
+                }
+
+                if(Target == TargetType.Any || (side == Side.PLAYER && Target == TargetType.Opponents) || (side == Side.ENEMY && Target == TargetType.Allies) )
+                {
+                    validTargets.Add( PositionToIndex(position, Side.ENEMY) );
+                }
+            }
+
+            return validTargets;
+        }
+
+        public int PositionToIndex(Position position, Side side) => position switch
+        {
+            Position.Front => side == Side.PLAYER ? 3 : 4,
+            Position.MidFront => side == Side.PLAYER ? 2 : 5,
+            Position.MidBack => side == Side.PLAYER ? 1 : 6,
+            Position.Back => side == Side.PLAYER ? 0 : 7,
+            _ => -1,
+        };
         
+        public Position IndexToPosition(int index)
+        {
+            if(index == 0 || index == 7) return Position.Back;
+            if(index == 1 || index == 6) return Position.MidBack;
+            if(index == 2 || index == 5) return Position.MidFront;
+            if(index == 3 || index == 4) return Position.Front;
+            
+            return Position.Front;
+        }
     }
 }

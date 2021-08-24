@@ -17,7 +17,7 @@ namespace Game.UI.Combat
             PositionsGrid = Add((width, height) => new GridLayout(width, height, 8, 1, false), 0, 1);
             for(var i = 0; i < 8; i++)
             {
-                PositionsGrid.Add((width, height) => new PositionDisplay(width, height), i, 0);
+                PositionsGrid.Add((width, height) => new PositionDisplay(combat.Combatants[i], width, height), i, 0);
             }
 
             Add((width, height) => new BorderedLayout(width, height)).Add((width, height) => new Button("test", () => {

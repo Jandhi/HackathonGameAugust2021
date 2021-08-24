@@ -30,14 +30,14 @@ namespace Game
         {
             var console = new Console(GAME_WIDTH, GAME_HEIGHT);
             
-            var entity1 = new Entity("1", null);
-            var entity2 = new Entity("2", null);
-            var entity3 = new Entity("3", null);
-            var entity4 = new Entity("4", null);
-            var entity5 = new Entity("5", null);
-            var entity6 = new Entity("6", null);
-            var entity7 = new Entity("7", null);
-            var entity8 = new Entity("8", null);
+            var entity1 = new Entity(new Game.UI.ColoredString("1", Color.Red), null);
+            var entity2 = new Entity(new Game.UI.ColoredString("2", Color.Red), null);
+            var entity3 = new Entity(new Game.UI.ColoredString("3", Color.Red), null);
+            var entity4 = new Entity(new Game.UI.ColoredString("4", Color.Green), null);
+            var entity5 = new Entity(new Game.UI.ColoredString("5", Color.Azure), null);
+            var entity6 = new Entity(new Game.UI.ColoredString("6", Color.Beige), null);
+            var entity7 = new Entity(new Game.UI.ColoredString("7", Color.Yellow), null);
+            var entity8 = new Entity(new Game.UI.ColoredString("8", Color.YellowGreen), null);
 
             var combat = new Combat.Combat(new List<Entity>() {entity1, entity2, entity3, entity4, entity5, entity6, entity7, entity8});
 

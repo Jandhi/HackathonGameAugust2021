@@ -4,7 +4,7 @@ using System;
 
 namespace Game.UI
 {
-    public abstract class ColoredString
+    public class ColoredString
     {
         public string Contents { get; set; }
         public Color Foreground { get; set; } = Color.White;
@@ -166,6 +166,11 @@ namespace Game.UI
                 {
                     currentWord += c;
                 }
+            }
+
+            if(currentWord != "")
+            {
+                list.Add(currentWord);
             }
 
             return list;
