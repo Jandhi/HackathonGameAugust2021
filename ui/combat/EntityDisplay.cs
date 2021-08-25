@@ -1,4 +1,5 @@
 using Microsoft.Xna.Framework;
+using Game.Combat;
 
 namespace Game.UI.Combat
 {
@@ -7,18 +8,22 @@ namespace Game.UI.Combat
         public static readonly int EntityDisplayGridWidth = 1;
         public static readonly int EntityDisplayGridHeight = 5;
 
-        public CombatDisplay CombatDisplay { get; }
-        public EntityDisplay(int width, int height, CombatDisplay combatDisplay) : base(width, height, EntityDisplayGridWidth, EntityDisplayGridHeight)
+        public Entity Entity { get; set; } = null;
+        public EntityDisplay(int width, int height) : base(width, height, EntityDisplayGridWidth, EntityDisplayGridHeight)
         {
-            CombatDisplay = combatDisplay;
             SetupLayout();
-
-            
+        }
+        
+        public void UpdateEntity(Entity entity)
+        {
+            Entity = entity;
+            Clear();
+            Draw();
         }
 
         public void Draw()
         {
-
+            
         }
 
         public void SetupLayout()
