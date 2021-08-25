@@ -1,18 +1,19 @@
 using Microsoft.Xna.Framework;
 using Game.UI.Log;
 using Game.Combat;
+using System.Collections.Generic;
 
 namespace Game.UI.Combat
 {
     public class CombatDisplay : GridLayout
     {
-        public GridLayout PositionsGrid { get; }
         public Game.Combat.Combat Combat { get; }
-        public Entity FocusedEntity { get; set; }
+        public GridLayout PositionsGrid { get; }
+        public List<SadConsole.Console> HoverSurfaces { get; } = new List<SadConsole.Console>();
+        public int FocusedEntityIndex { get; set; }
 
         public CombatDisplay(int width, int height, Game.Combat.Combat combat) : base(width, height, 2, 3)
         {
-            Fill(Color.Black, Color.Black, 0);
             Combat = combat;
             
             SetupLayout();
@@ -20,17 +21,30 @@ namespace Game.UI.Combat
             PositionsGrid = Add((width, height) => new GridLayout(width, height, 8, 1, false), 0, 1);
             for(var i = 0; i < 8; i++)
             {
-                PositionsGrid.Add((width, height) => new PositionDisplay(combat.Combatants[i], width, height), i, 0);
+                var entity = combat.Combatants[i];
+                var display = PositionsGrid.Add((width, height) => new PositionDisplay(entity, width, height), i, 0);
+
+                var hoverSurface = new SadConsole.Console(display.Width, display.Height);
+                hoverSurface.Position = display.Position;
+                hoverSurface.Parent = PositionsGrid;
+                var index = i;
+                hoverSurface.MouseEnter += (setter, args) => EnteredEntityFocus(index);
+                hoverSurface.MouseExit += (setter, args) => ExitedEntityFocus(index);
+                HoverSurfaces.Add(hoverSurface);
             }
+
+            
 
             Add((width, height) => new BorderedLayout(width, height)).Add((width, height) => new Button("test", () => {
                 Combat.Log.AddLine(ColoredString.RecolorForeground(Color.Orange) + "Test test test test test" + ColoredString.Undo() + "test test test tes test");
             }));
 
             Add((width, height) => new BorderedLayout(width, height), 0, 2);
-            Add((width, height) => new LogDisplay(width, height, Combat.Log), 1, 0, 1, 3);
-
-            MouseMove += (sender, args) => OnMouseMove(args);
+            Add((width, height) => new BorderedLayout(width, height), 1, 0, 1, 2)
+                .Add((width, height) => new GravityLayout(width, height))
+                    .Add((width, height) => new EntityDisplay(width, height, this), 2, true, LayoutGravity.CENTER, 2, true, LayoutGravity.CENTER);
+            
+            Add((width, height) => new LogDisplay(width, height, Combat.Log), 1, 2);
         }
 
         public void SetupLayout()
@@ -41,23 +55,45 @@ namespace Game.UI.Combat
             CalculateDimensions();
         }
 
-        public void OnMouseMove(SadConsole.Input.MouseEventArgs args)
+        public void EnteredEntityFocus(int index)
         {
-            var pos = args.MouseState.ConsoleCellPosition;
+            FocusedEntityIndex = index;
+            DrawSelectionBox(index);
+            UpdatedEntityFocus();
+        }
 
-            var isInPositionsGrid = PositionsGrid.Position.X <= pos.X 
-                && PositionsGrid.Position.X + PositionsGrid.Width > pos.X 
-                && PositionsGrid.Position.Y <= pos.Y 
-                && PositionsGrid.Position.Y + PositionsGrid.Height > pos.Y;
-            
-            if(isInPositionsGrid)
+        public void DrawSelectionBox(int index)
+        {
+            var surface = HoverSurfaces[index];
+            var color = Color.Gold;
+            surface.SetGlyph(0, surface.Height - 5, Border.TopLeft, color);
+            surface.SetGlyph(0, surface.Height - 4, Border.Vertical, color);
+            surface.SetGlyph(0, surface.Height - 3, Border.Vertical, color);
+            surface.SetGlyph(0, surface.Height - 2, Border.BottomLeft, color);
+
+            surface.SetGlyph(surface.Width - 1, surface.Height - 5, Border.TopRight, color);
+            surface.SetGlyph(surface.Width - 1, surface.Height - 4, Border.Vertical, color);
+            surface.SetGlyph(surface.Width - 1, surface.Height - 3, Border.Vertical, color);
+            surface.SetGlyph(surface.Width - 1, surface.Height - 2, Border.BottomRight, color);
+        }
+
+        public void ExitedEntityFocus(int index)
+        {
+            HoverSurfaces[index].Clear();
+
+            if(FocusedEntityIndex == index)
             {
-                Print(10, 1, "I'm in!");
+                FocusedEntityIndex = -1;
+                UpdatedEntityFocus();
             }
-            else
-            {
-                Print(10, 1, "I'm not in");
-            }
+        }
+
+        public void UpdatedEntityFocus()
+        {
+            Clear();
+            var text = FocusedEntityIndex == -1 ? "null" : Combat.Combatants[FocusedEntityIndex].Name.ToString();
+            UsePrintProcessor = true;
+            Print(10, 1, text, Color.White);
         }
     }
 }

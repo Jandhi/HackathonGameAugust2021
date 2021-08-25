@@ -18,6 +18,7 @@ namespace Game.UI
         public int GridHeight { get; }
         public GridLayoutSegment[] XSegments { get; }
         public GridLayoutSegment[] YSegments { get; }
+        public SadConsole.Console[,] Containees { get; }
         public Boolean IsDistributingExtraSpace { get; }
 
         public GridLayout(int width, int height, int gridWidth, int gridHeight, bool isDistributingExtraSpace = true) : base(width, height)
@@ -26,6 +27,7 @@ namespace Game.UI
             GridHeight = gridHeight;
             XSegments = new GridLayoutSegment[gridWidth];
             YSegments = new GridLayoutSegment[gridHeight];
+            Containees = new SadConsole.Console[gridWidth, gridHeight];
             IsDistributingExtraSpace = isDistributingExtraSpace;
 
             for(var x = 0; x < gridWidth; x++)
@@ -84,6 +86,14 @@ namespace Game.UI
             var console = ConsoleConstructor(dimensions.Width, dimensions.Height);
             console.Position = new Point(dimensions.X, dimensions.Y);
             console.Parent = this;
+
+            for(var gridX = dimensions.X; gridX < dimensions.Width; gridX++)
+            {
+                for(var gridY = dimensions.Y; gridY < dimensions.Height; gridY++)
+                {
+                    Containees[x,y] = console;
+                }
+            }
 
             return console;
         }
