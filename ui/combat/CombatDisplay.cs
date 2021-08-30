@@ -2,6 +2,7 @@ using Microsoft.Xna.Framework;
 using Game.UI.Log;
 using Game.Combat;
 using System.Collections.Generic;
+using static Game.Util.ConsoleFunctions;
 
 namespace Game.UI.Combat
 {
@@ -11,6 +12,7 @@ namespace Game.UI.Combat
         public GridLayout PositionsGrid { get; }
         public List<SadConsole.Console> HoverSurfaces { get; } = new List<SadConsole.Console>();
         public int FocusedEntityIndex { get; set; }
+        public EntityDisplay EntityDisplay { get; }
 
         public CombatDisplay(int width, int height, Game.Combat.Combat combat) : base(width, height, 2, 3)
         {
@@ -29,7 +31,13 @@ namespace Game.UI.Combat
                 hoverSurface.Parent = PositionsGrid;
                 var index = i;
                 hoverSurface.MouseEnter += (setter, args) => EnteredEntityFocus(index);
-                hoverSurface.MouseExit += (setter, args) => ExitedEntityFocus(index);
+                hoverSurface.MouseExit += (setter, args) => {
+                    ExitedEntityFocus(index);
+                    display.HealthBar.IsHovered = false;
+                };
+                hoverSurface.MouseMove += (setter, args) => {
+                    display.HealthBar.IsHovered = IsInConsole(args.MouseState.WorldCellPosition, display.HealthBar);
+                };
                 HoverSurfaces.Add(hoverSurface);
             }
 
@@ -40,9 +48,9 @@ namespace Game.UI.Combat
             }));
 
             Add((width, height) => new BorderedLayout(width, height), 0, 2);
-            Add((width, height) => new BorderedLayout(width, height), 1, 0, 1, 2)
+            EntityDisplay = Add((width, height) => new BorderedLayout(width, height), 1, 0, 1, 2)
                 .Add((width, height) => new GravityLayout(width, height))
-                    .Add((width, height) => new EntityDisplay(width, height, this), 2, true, LayoutGravity.CENTER, 2, true, LayoutGravity.CENTER);
+                    .Add((width, height) => new EntityDisplay(width, height), 2, true, LayoutGravity.CENTER, 2, true, LayoutGravity.CENTER);
             
             Add((width, height) => new LogDisplay(width, height, Combat.Log), 1, 2);
         }
@@ -91,9 +99,8 @@ namespace Game.UI.Combat
         public void UpdatedEntityFocus()
         {
             Clear();
-            var text = FocusedEntityIndex == -1 ? "null" : Combat.Combatants[FocusedEntityIndex].Name.ToString();
-            UsePrintProcessor = true;
-            Print(10, 1, text, Color.White);
+            var entity = FocusedEntityIndex == -1 ? null : Combat.Combatants[FocusedEntityIndex];
+            EntityDisplay.Entity = entity;
         }
     }
 }

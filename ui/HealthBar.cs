@@ -11,33 +11,58 @@ namespace Game.UI
 
         private int maxHealth;
         public int MaxHealth { 
-            get {
+            get 
+            {
                 return maxHealth;
             } 
-            set {
+            set 
+            {
                 maxHealth = value;
                 Draw();
             }
         }
         private int health;
         public int Health { 
-            get {
+            get 
+            {
                 return health;
             } 
-            set {
+            set 
+            {
                 health = value;
                 Draw();
             } 
         }
 
+        private bool isHovered;
+        public bool IsHovered {
+            get 
+            {
+                return isHovered;
+            }
+            set
+            {
+                isHovered = value;
+                Draw();
+            } 
+        }
+
+        public TextDisplay TextDisplay { get; }
+
         public HealthBar(int health, int maxHealth, int width) : base(width, 1)
         {
             MaxHealth = maxHealth;
             Health = health;
+
+            TextDisplay = new TextDisplay("", width, 1, false);
+            TextDisplay.Parent = this;
         }
 
         public void Draw()
         {
+            Clear();
+            TextDisplay?.Clear();
+
             var ratio = ((Width - 1) * Health) / MaxHealth;
             
             // Don't show empty if not dead
@@ -56,6 +81,21 @@ namespace Game.UI
             {
                 var color = x <= ratio ? HEALTH : DAMAGE;
                 SetGlyph(x, 0, 177, color);
+            }
+
+            if(isHovered)
+            {
+                var hpText = $"{health}/{maxHealth}";
+                var buffer = Width - hpText.Length;
+
+                if(buffer < 0)
+                {
+                    TextDisplay.Text = "";
+                }
+                else
+                {
+                    TextDisplay.Text = hpText.PadLeft(buffer / 2 + hpText.Length, ' ');
+                }
             }
         }
     }

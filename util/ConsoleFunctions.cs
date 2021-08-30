@@ -1,4 +1,5 @@
 using System;
+using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 
 namespace Game.Util
@@ -22,6 +23,29 @@ namespace Game.Util
 
                 action(nextConsole);
             }
+        }
+
+        public static bool IsInConsole(Point point, SadConsole.Console console)
+        {
+            var consoleWorldPosition = GetWorldPosition(console);
+            return point.X >= consoleWorldPosition.X &&
+                point.X < consoleWorldPosition.X + console.Width &&
+                point.Y >= consoleWorldPosition.Y &&
+                point.Y < consoleWorldPosition.Y + console.Height;
+        }
+
+        public static Point GetWorldPosition(SadConsole.Console console)
+        {
+            var point = new Point();
+            var node = console;
+
+            while(node != null)
+            {
+                point += node.Position;
+                node = node.Parent;
+            }
+
+            return point;
         }
     }
 }

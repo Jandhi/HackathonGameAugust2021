@@ -18,6 +18,7 @@ namespace Game.UI
             {
                 text = value;
                 Lines = CalculateLines();
+                Draw();
             } 
         }
         public bool DoWrapping { get; }

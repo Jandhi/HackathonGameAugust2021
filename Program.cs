@@ -30,7 +30,7 @@ namespace Game
         {
             var console = new Console(GAME_WIDTH, GAME_HEIGHT);
             
-            var entity1 = new Entity(new Game.UI.ColoredString("1", Color.Red), null);
+            var entity1 = new Entity(new Game.UI.ColoredString("1", Color.Red), null, new List<Tag>{new Tag(new UI.ColoredString("tag", Color.BlueViolet))});
             var entity2 = new Entity(new Game.UI.ColoredString("2", Color.Red), null);
             var entity3 = new Entity(new Game.UI.ColoredString("3", Color.Red), null);
             var entity4 = new Entity(new Game.UI.ColoredString("4", Color.Green), null);
