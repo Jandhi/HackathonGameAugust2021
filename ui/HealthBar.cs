@@ -63,23 +63,23 @@ namespace Game.UI
             Clear();
             TextDisplay?.Clear();
 
-            var ratio = ((Width - 1) * Health) / MaxHealth;
+            var greenTileCount = MaxHealth == 0 ? 0 : ((Width) * Health) / MaxHealth;
             
             // Don't show empty if not dead
-            if(ratio == 0 && Health > 0) 
+            if(greenTileCount == 0 && Health > 0) 
             {
-                ratio = 1;
+                greenTileCount = 1;
             }
 
             // Don't show full if not full
-            if(ratio == Width - 1 && Health < MaxHealth) 
+            if(greenTileCount == Width && Health < MaxHealth) 
             {
-                ratio = Width - 2;
+                greenTileCount = Width - 1;
             }
 
             for(var x = 0; x < Width; x++)
             {
-                var color = x <= ratio ? HEALTH : DAMAGE;
+                var color = x < greenTileCount ? HEALTH : DAMAGE;
                 SetGlyph(x, 0, 177, color);
             }
 

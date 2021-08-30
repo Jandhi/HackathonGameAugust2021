@@ -10,9 +10,10 @@ namespace Game.UI.Combat
     {
         public Game.Combat.Combat Combat { get; }
         public GridLayout PositionsGrid { get; }
+        public List<PositionDisplay> Positions { get; } = new List<PositionDisplay>();
         public List<SadConsole.Console> HoverSurfaces { get; } = new List<SadConsole.Console>();
-        public int FocusedEntityIndex { get; set; }
         public EntityDisplay EntityDisplay { get; }
+        public int FocusedEntityIndex { get; set; }
 
         public CombatDisplay(int width, int height, Game.Combat.Combat combat) : base(width, height, 2, 3)
         {
@@ -25,6 +26,7 @@ namespace Game.UI.Combat
             {
                 var entity = combat.Combatants[i];
                 var display = PositionsGrid.Add((width, height) => new PositionDisplay(entity, width, height), i, 0);
+                Positions.Add(display);
 
                 var hoverSurface = new SadConsole.Console(display.Width, display.Height);
                 hoverSurface.Position = display.Position;
@@ -44,7 +46,16 @@ namespace Game.UI.Combat
             
 
             Add((width, height) => new BorderedLayout(width, height)).Add((width, height) => new Button("test", () => {
-                Combat.Log.AddLine(ColoredString.RecolorForeground(Color.Orange) + "Test test test test test" + ColoredString.Undo() + "test test test tes test");
+                foreach(var entity in Combat.Combatants)
+                {
+                    entity.Stats[Stat.MaxHealth] = 5;
+                    entity.Stats[Stat.Health] = new System.Random().Next(6);
+                }
+
+                foreach(var display in Positions)
+                {
+                    display.UpdateHealthBar();
+                }
             }));
 
             Add((width, height) => new BorderedLayout(width, height), 0, 2);

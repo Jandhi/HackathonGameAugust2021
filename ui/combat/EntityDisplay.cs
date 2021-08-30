@@ -7,7 +7,7 @@ namespace Game.UI.Combat
     {
         public static readonly int EntityDisplayGridWidth = 1;
         public static readonly int EntityDisplayGridHeight = 5;
-        private Entity entity;
+        public Entity entity;
         public Entity Entity { 
             get
             {
@@ -25,6 +25,7 @@ namespace Game.UI.Combat
             SetupLayout();
             Theme = theme ?? Theme.CurrentTheme;
             UsePrintProcessor = true;
+
         }
 
         public void Draw()
