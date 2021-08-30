@@ -43,18 +43,11 @@ namespace Game.UI.Combat
                 HoverSurfaces.Add(hoverSurface);
             }
 
-            
-
             Add((width, height) => new BorderedLayout(width, height)).Add((width, height) => new Button("test", () => {
                 foreach(var entity in Combat.Combatants)
                 {
                     entity.Stats[Stat.MaxHealth] = 5;
                     entity.Stats[Stat.Health] = new System.Random().Next(6);
-                }
-
-                foreach(var display in Positions)
-                {
-                    display.UpdateHealthBar();
                 }
             }));
 

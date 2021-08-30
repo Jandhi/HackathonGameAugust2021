@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Game.Combat.Action;
 
 namespace Game.Combat.Event
 {
@@ -8,14 +9,16 @@ namespace Game.Combat.Event
 
         public int Depth { get; }
         public Combat Combat { get; }
+        public AbilityResult Root { get; }
         
         public HashSet<ICombatEventListener> Visited { get; } = new HashSet<ICombatEventListener>(); // List of listeners it already visited
         public Queue<ICombatEventListener> BroadcastQueue { get; } = new Queue<ICombatEventListener>(); // Queue of upcoming broadcasts
         public HashSet<ICombatEventListener> BroadcastSet { get; } = new HashSet<ICombatEventListener>(); // Set of listeners to be broadcasted to, to avoid duplicate broadcasting
-        public CombatEvent(int depth, Combat combat)
+        public CombatEvent(int depth, Combat combat, AbilityResult root)
         {
             Depth = depth;
             Combat = combat;
+            Root = root;
         }
 
         public void Broadcast()

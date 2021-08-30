@@ -1,4 +1,4 @@
-using Game.Combat.Ability;
+using Game.Combat.Action;
 
 namespace Game.Combat.Event
 {
@@ -10,7 +10,7 @@ namespace Game.Combat.Event
         public float Damage { get; set; }
         public DamageType Type { get; }
         public bool IsGoingThrough { get; set; } = true;
-        public ReceiveDamageEvent(int depth, Combat combat, Entity caster, Entity receiver, Ability.Ability ability, float damage, DamageType type) : base(depth, combat)
+        public ReceiveDamageEvent(int depth, Combat combat, AbilityResult root, Entity caster, Entity receiver, Ability.Ability ability, float damage, DamageType type) : base(depth, combat, root)
         {
             Caster = caster;
             Receiver = receiver;
@@ -19,7 +19,7 @@ namespace Game.Combat.Event
             Type = type;
         }
 
-        public ReceiveDamageEvent(SendDamageEvent ev, Entity receiver) : this(ev.Depth, ev.Combat, ev.Caster, receiver, ev.Ability, ev.Damage, ev.Type)
+        public ReceiveDamageEvent(SendDamageEvent ev, Entity receiver) : this(ev.Depth, ev.Combat, ev.Root, ev.Caster, receiver, ev.Ability, ev.Damage, ev.Type)
         {}
     }
 }

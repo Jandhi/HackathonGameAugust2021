@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Game.Combat.Event;
-using System.Linq;
+using Game.UI;
+using Game.Combat.Action;
 
 namespace Game.Combat.Ability
 {
@@ -14,23 +15,34 @@ namespace Game.Combat.Ability
         Front, MidFront, MidBack, Back
     }
 
-    public abstract class Ability
+    public abstract class Ability : INamed
     {
-        public string Name { get; }
+        public ColoredString Name { get; }
         public TargetType Target { get; }
         public List<Position> TargetPositions { get; }
         public List<Position> CasterPositions { get; }
-        public void Use(int depth, Combat combat, Entity caster, List<Entity> targets)
+        public Ability(ColoredString name, TargetType target, List<Position> targetPositions, List<Position> casterPositions)
         {
-            var useAbilityEvent = new UseAbilityEvent(depth, combat, caster, this);
+            Name = name;
+            Target = target;
+            TargetPositions = targetPositions;
+            CasterPositions = casterPositions;
+        }
+        public AbilityResult Use(int depth, Combat combat, Entity caster, List<Entity> targets)
+        {
+            var root = new AbilityResult(caster);
+
+            var useAbilityEvent = new UseAbilityEvent(depth, combat, root, caster, this);
             useAbilityEvent.Broadcast();
             
             if(useAbilityEvent.IsGoingThrough) {
-                Execute(depth, combat, caster, targets);
+                Execute(depth, combat, root, caster, targets);
             }
+
+            return root;
         }
 
-        public abstract void Execute(int depth, Combat combat, Entity caster, List<Entity> targets);
+        public abstract void Execute(int depth, Combat combat, AbilityResult root, Entity caster, List<Entity> targets);
 
         public bool CanCastFromPosition(Entity caster, Combat combat)
         {

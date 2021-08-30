@@ -1,37 +1,26 @@
 using SadConsole.Input;
 using System;
 using Microsoft.Xna.Framework;
+using Game.Combat;
 
 namespace Game.UI
 {
-    public class HealthBar : SadConsole.Console
+    public class HealthBar : SadConsole.Console, IStatChangeListener
     {
-        public static readonly Color HEALTH = Color.Green;
-        public static readonly Color DAMAGE = Color.Red;
-
-        private int maxHealth;
-        public int MaxHealth { 
+        public static readonly Color HealthColor = Color.Green;
+        public static readonly Color DamageColor = Color.Red;
+        public Entity entity;
+        public Entity Entity
+        {
             get 
             {
-                return maxHealth;
-            } 
-            set 
+                return entity;
+            }
+            set
             {
-                maxHealth = value;
+                entity = value;
                 Draw();
             }
-        }
-        private int health;
-        public int Health { 
-            get 
-            {
-                return health;
-            } 
-            set 
-            {
-                health = value;
-                Draw();
-            } 
         }
 
         private bool isHovered;
@@ -49,13 +38,21 @@ namespace Game.UI
 
         public TextDisplay TextDisplay { get; }
 
-        public HealthBar(int health, int maxHealth, int width) : base(width, 1)
+        public HealthBar(Entity entity, int width) : base(width, 1)
         {
-            MaxHealth = maxHealth;
-            Health = health;
+            this.entity = entity;
+            entity.Stats.Listeners.Add(this);
 
             TextDisplay = new TextDisplay("", width, 1, false);
             TextDisplay.Parent = this;
+        }
+
+        public void NotifyStatChange(Entity entity, Stat stat, float oldValue, float newValue)
+        {
+            if(Entity == entity)
+            {
+                Draw();
+            }
         }
 
         public void Draw()
@@ -63,30 +60,32 @@ namespace Game.UI
             Clear();
             TextDisplay?.Clear();
 
-            var greenTileCount = MaxHealth == 0 ? 0 : ((Width) * Health) / MaxHealth;
+            var maxHealth = entity.Stats[Stat.MaxHealth];
+            var health = entity.Stats[Stat.Health];
+            var greenTileCount = maxHealth == 0 ? 0 : (((Width) * health) / maxHealth);
             
             // Don't show empty if not dead
-            if(greenTileCount == 0 && Health > 0) 
+            if(greenTileCount == 0 && health > 0) 
             {
                 greenTileCount = 1;
             }
 
             // Don't show full if not full
-            if(greenTileCount == Width && Health < MaxHealth) 
+            if(greenTileCount == Width && health < maxHealth) 
             {
                 greenTileCount = Width - 1;
             }
 
             for(var x = 0; x < Width; x++)
             {
-                var color = x < greenTileCount ? HEALTH : DAMAGE;
+                var color = x < greenTileCount ? HealthColor : DamageColor;
                 SetGlyph(x, 0, 177, color);
             }
 
             if(isHovered)
             {
-                var hpText = $"{health}/{maxHealth}";
-                var buffer = Width - hpText.Length;
+                var text = Entity.IsDead ? "DEAD" : $"{health}/{maxHealth}";
+                var buffer = Width - text.Length;
 
                 if(buffer < 0)
                 {
@@ -94,7 +93,7 @@ namespace Game.UI
                 }
                 else
                 {
-                    TextDisplay.Text = hpText.PadLeft(buffer / 2 + hpText.Length, ' ');
+                    TextDisplay.Text = text.PadLeft(buffer / 2 + text.Length, ' ');
                 }
             }
         }

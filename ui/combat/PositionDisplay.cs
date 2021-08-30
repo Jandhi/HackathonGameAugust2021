@@ -18,15 +18,10 @@ namespace Game.UI.Combat
             set
             {
                 entity = value;
-                UpdateHealthBar();
+                HealthBar.Entity = entity;
             } 
         }
         public HealthBar HealthBar { get; }
-        public void UpdateHealthBar()
-        {
-            HealthBar.Health = (int) entity.Stats[Stat.Health];
-            HealthBar.MaxHealth = (int) entity.Stats[Stat.MaxHealth];
-        }
 
         public PositionDisplay(Entity entity, int width, int height) : base(width, height, PositionDisplayGridWidth, PositionDisplayGridHeight)
         {
@@ -34,7 +29,7 @@ namespace Game.UI.Combat
             SetupLayout();
 
             var healthBarContainer = Add((width, height) => new GravityLayout<HealthBar>(width, height), 0, 3);
-            HealthBar = healthBarContainer.Add((width, height) => new HealthBar(10, 10, width), 2, true, LayoutGravity.CENTER);
+            HealthBar = healthBarContainer.Add((width, height) => new HealthBar(entity, width), 2, true, LayoutGravity.CENTER);
 
             Entity = entity;
 

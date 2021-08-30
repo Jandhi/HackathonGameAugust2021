@@ -6,9 +6,9 @@ namespace Game.Combat.Action
     {
         public List<ICombatAction> Actions { get; }
 
-        public CompositeCombatAction(List<ICombatAction> actions)
+        public CompositeCombatAction(List<ICombatAction> actions = null)
         {
-            Actions = actions;
+            Actions = actions ?? new List<ICombatAction>();
         }
 
         public void Do() 

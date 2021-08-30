@@ -9,6 +9,9 @@ namespace Game.UI
         public string Contents { get; set; }
         public Color Foreground { get; set; } = Color.White;
         public Color Background { get; set; } = Color.Black;
+        
+        public ColoredString() // for object initializer
+        {}
 
         public ColoredString(string contents)
         {

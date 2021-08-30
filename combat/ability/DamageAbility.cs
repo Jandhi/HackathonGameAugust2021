@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Game.Combat.Event;
 using Game.Combat.Action;
+using Game.UI;
 
 namespace Game.Combat.Ability
 {
@@ -9,9 +10,12 @@ namespace Game.Combat.Ability
         public float Damage { get; }
         public DamageType Type { get; }
 
-        public override void Execute(int depth, Combat combat, Entity caster, List<Entity> targets)
+        public DamageAbility(ColoredString name, TargetType target, List<Position> targetPositions, List<Position> casterPositions) : base(name, target, targetPositions, casterPositions)
+        {}
+
+        public override void Execute(int depth, Combat combat, AbilityResult root, Entity caster, List<Entity> targets)
         {
-            var sendDamageEvent = new SendDamageEvent(depth, combat, caster, targets, this, Damage, Type);
+            var sendDamageEvent = new SendDamageEvent(depth, combat, root, caster, targets, this, Damage, Type);
             sendDamageEvent.Broadcast();
 
             if(!sendDamageEvent.IsGoingThrough)

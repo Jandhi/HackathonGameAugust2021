@@ -1,4 +1,4 @@
-using Game.Combat.Ability;
+using Game.Combat.Action;
 
 namespace Game.Combat.Event
 {
@@ -10,7 +10,7 @@ namespace Game.Combat.Event
         public float Damage { get; set; }
         public DamageType Type { get; }
 
-        public TookDamageEvent(int depth, Combat combat, Entity caster, Entity receiver, Ability.Ability ability, int damage, DamageType type) : base(depth, combat)
+        public TookDamageEvent(int depth, Combat combat, AbilityResult root, Entity caster, Entity receiver, Ability.Ability ability, int damage, DamageType type) : base(depth, combat, root)
         {
             Caster = caster;
             Receiver = receiver;

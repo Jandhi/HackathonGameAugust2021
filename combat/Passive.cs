@@ -2,26 +2,22 @@ using Game.Combat.Event;
 using System.Collections.Generic;
 using System;
 using System.Linq;
+using Game.UI;
 
 namespace Game.Combat
 {
-    public abstract class Passive : ICombatEventListener
+    public class Passive : Passive<CombatEvent>
     {
-        public Entity Parent { get; }
-
-        public Passive(Entity parent)
-        {   
-            Parent = parent;
+        public Passive(ColoredString name, Entity parent) : base(name, parent)
+        {
         }
-
-        public abstract void Receive(CombatEvent ev);
     }
 
-    public class Passive<T> : Passive where T : CombatEvent
+    public class Passive<T> : PassiveBase where T : CombatEvent
     {
         public List<Func<T, bool>> Filters { get; } = new List<Func<T, bool>>();
         public List<Action<T>> Modifiers { get; } = new List<Action<T>>();
-        public Passive(Entity parent) : base(parent)
+        public Passive(ColoredString name, Entity parent) : base(name, parent)
         {
         }
 
@@ -36,6 +32,7 @@ namespace Game.Combat
 
             if(Filters.All(filter => filter(receivedEvent)))
             {
+                ev.Root.ActivatedPassives.Add(this);
                 ev.MakeModification(this, () => {
                     foreach(var modifier in Modifiers)
                     {
@@ -44,5 +41,22 @@ namespace Game.Combat
                 });
             }
         }
+
+        
     }    
+
+    public abstract class PassiveBase : ICombatEventListener, INamed
+    {
+        public ColoredString Name { get; }
+        public Entity Parent { get; set; }
+
+        public PassiveBase(ColoredString name, Entity parent)
+        {   
+            Name = name;
+            Parent = parent;
+            Parent.Passives.Add(this);
+        }
+
+        public abstract void Receive(CombatEvent ev);
+    }
 }

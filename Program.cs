@@ -30,7 +30,10 @@ namespace Game
         {
             var console = new Console(GAME_WIDTH, GAME_HEIGHT);
             
-            var entity1 = new Entity(new Game.UI.ColoredString("1", Color.Red), null, new List<Tag>{new Tag(new UI.ColoredString("tag", Color.BlueViolet))});
+            var entity1 = new Entity(new Game.UI.ColoredString("1", Color.Red), null, new List<Tag>{
+                new Tag(new UI.ColoredString("tag", Color.BlueViolet)),
+                new Tag(new UI.ColoredString("tag2", Color.SpringGreen))
+            });
             var entity2 = new Entity(new Game.UI.ColoredString("2", Color.Red), null);
             var entity3 = new Entity(new Game.UI.ColoredString("3", Color.Red), null);
             var entity4 = new Entity(new Game.UI.ColoredString("4", Color.Green), null);
@@ -41,21 +44,25 @@ namespace Game
 
             var combat = new Combat.Combat(new List<Entity>() {entity1, entity2, entity3, entity4, entity5, entity6, entity7, entity8});
 
-            var ev = new SendDamageEvent(0, combat, entity1, null, null, 5, DamageType.Physical);
-            var passive = new Passive<SendDamageEvent>(entity2);
+            var root = new Combat.Action.AbilityResult(entity1);
+            var ev = new SendDamageEvent(0, combat, root, entity1, null, null, 5, DamageType.Physical);
+            var passive = new Passive<SendDamageEvent>(
+                name: new UI.ColoredString("test"), 
+                parent: entity2
+            );
             passive.Filters.Add(ev => ev.Combat.IsOnSameSide(ev.Caster, passive.Parent));
             passive.Modifiers.Add(ev => ev.Damage *= 2f);
-            entity2.Passives.Add(passive);
 
-            var passive2 = new Passive<SendDamageEvent>(entity1);
+            var passive2 = new Passive<SendDamageEvent>(new UI.ColoredString("test"), entity1);
             passive2.Filters.Add(ev => ev.Damage > 7);
             passive2.Modifiers.Add(ev => ev.Damage *= 2f);
-            entity1.Passives.Add(passive2);
 
             ev.Broadcast();
 
             var display = new CombatDisplay(GAME_WIDTH, GAME_HEIGHT, combat);
             display.Parent = console;
+
+
             
             SadConsole.Global.CurrentScreen = console;
         }
