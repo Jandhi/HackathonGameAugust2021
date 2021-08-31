@@ -32,7 +32,7 @@ namespace Game
             var test = SadConsole.Game.Instance.Content.Load<SoundEffect>("Guitar");
             var instance = test.CreateInstance();
             instance.Pitch = -0.5f;
-            instance.Volume = 1f;
+            instance.Volume = 0.25f;
             instance.IsLooped = true;
             instance.Play();
 
