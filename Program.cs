@@ -33,6 +33,7 @@ namespace Game
             var instance = test.CreateInstance();
             instance.Pitch = -0.5f;
             instance.Volume = 1f;
+            instance.IsLooped = true;
             instance.Play();
 
             var console = new Console(GAME_WIDTH, GAME_HEIGHT);
