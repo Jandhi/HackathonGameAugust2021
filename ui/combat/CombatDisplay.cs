@@ -8,16 +8,20 @@ namespace Game.UI.Combat
 {
     public class CombatDisplay : GridLayout
     {
+
         public Game.Combat.Combat Combat { get; }
         public GridLayout PositionsGrid { get; }
         public List<PositionDisplay> Positions { get; } = new List<PositionDisplay>();
         public List<SadConsole.Console> HoverSurfaces { get; } = new List<SadConsole.Console>();
         public EntityDisplay EntityDisplay { get; }
         public int FocusedEntityIndex { get; set; }
+        public int SelectedEntityIndex { get; set; }
+        public Theme Theme { get; }
 
-        public CombatDisplay(int width, int height, Game.Combat.Combat combat) : base(width, height, 2, 3)
+        public CombatDisplay(int width, int height, Game.Combat.Combat combat, Theme theme = null) : base(width, height, 2, 3)
         {
             Combat = combat;
+            Theme = theme ?? Theme.CurrentTheme;
             
             SetupLayout();
 
@@ -28,19 +32,7 @@ namespace Game.UI.Combat
                 var display = PositionsGrid.Add((width, height) => new PositionDisplay(entity, width, height), i, 0);
                 Positions.Add(display);
 
-                var hoverSurface = new SadConsole.Console(display.Width, display.Height);
-                hoverSurface.Position = display.Position;
-                hoverSurface.Parent = PositionsGrid;
-                var index = i;
-                hoverSurface.MouseEnter += (setter, args) => EnteredEntityFocus(index);
-                hoverSurface.MouseExit += (setter, args) => {
-                    ExitedEntityFocus(index);
-                    display.HealthBar.IsHovered = false;
-                };
-                hoverSurface.MouseMove += (setter, args) => {
-                    display.HealthBar.IsHovered = IsInConsole(args.MouseState.WorldCellPosition, display.HealthBar);
-                };
-                HoverSurfaces.Add(hoverSurface);
+                CreateHoverSurface(i, display);
             }
 
             Add((width, height) => new BorderedLayout(width, height)).Add((width, height) => new Button("test", () => {
@@ -57,6 +49,8 @@ namespace Game.UI.Combat
                     .Add((width, height) => new EntityDisplay(width, height), 2, true, LayoutGravity.CENTER, 2, true, LayoutGravity.CENTER);
             
             Add((width, height) => new LogDisplay(width, height, Combat.Log), 1, 2);
+
+            DrawSelected();
         }
 
         public void SetupLayout()
@@ -67,17 +61,42 @@ namespace Game.UI.Combat
             CalculateDimensions();
         }
 
-        public void EnteredEntityFocus(int index)
+        private void CreateHoverSurface(int index, PositionDisplay display)
         {
-            FocusedEntityIndex = index;
-            DrawSelectionBox(index);
-            UpdatedEntityFocus();
+            var hoverSurface = new SadConsole.Console(display.Width, display.Height);
+            hoverSurface.Position = display.Position;
+            hoverSurface.Parent = PositionsGrid;
+            hoverSurface.MouseButtonClicked += (setter, args) => {
+                if(index != SelectedEntityIndex) 
+                {
+                    HoverSurfaces[SelectedEntityIndex].Clear();
+                }
+                SelectedEntityIndex = index;
+                EntityDisplay.Entity = Combat.Combatants[index];
+                DrawSelected();
+            };
+            hoverSurface.MouseEnter += (setter, args) => EnteredEntityFocus(index);
+            hoverSurface.MouseExit += (setter, args) => {
+                ExitedEntityFocus(index);
+                display.HealthBar.IsHovered = false;
+            };
+            hoverSurface.MouseMove += (setter, args) => {
+                display.HealthBar.IsHovered = IsInConsole(args.MouseState.WorldCellPosition, display.HealthBar);
+            };
+            HoverSurfaces.Add(hoverSurface);
         }
 
-        public void DrawSelectionBox(int index)
+        private void EnteredEntityFocus(int index)
+        {
+            FocusedEntityIndex = index;
+            if(index != SelectedEntityIndex) {
+                DrawSelectionBox(index, Theme.AccentColor);
+            }
+        }
+
+        private void DrawSelectionBox(int index, Color color)
         {
             var surface = HoverSurfaces[index];
-            var color = Color.Gold;
             surface.SetGlyph(0, surface.Height - 5, Border.TopLeft, color);
             surface.SetGlyph(0, surface.Height - 4, Border.Vertical, color);
             surface.SetGlyph(0, surface.Height - 3, Border.Vertical, color);
@@ -89,22 +108,24 @@ namespace Game.UI.Combat
             surface.SetGlyph(surface.Width - 1, surface.Height - 2, Border.BottomRight, color);
         }
 
-        public void ExitedEntityFocus(int index)
+        private void ExitedEntityFocus(int index)
         {
             HoverSurfaces[index].Clear();
 
             if(FocusedEntityIndex == index)
             {
                 FocusedEntityIndex = -1;
-                UpdatedEntityFocus();
+            }
+
+            if(SelectedEntityIndex == index)
+            {
+                DrawSelected();
             }
         }
 
-        public void UpdatedEntityFocus()
+        private void DrawSelected()
         {
-            Clear();
-            var entity = FocusedEntityIndex == -1 ? null : Combat.Combatants[FocusedEntityIndex];
-            EntityDisplay.Entity = entity;
+            DrawSelectionBox(SelectedEntityIndex, Theme.MainColor);
         }
     }
 }

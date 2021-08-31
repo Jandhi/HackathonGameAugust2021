@@ -1,12 +1,13 @@
 namespace Game.Combat.Action
 {
-    public class StatChange : ICombatAction
+    public class StatChange : BaseAction
     {
        
         public Entity Reciever {get;}
         public Stat AffectedStat {get;}
         public float StatAfter {get;}
-        public float StatBefore {get;}
+        public float StatBefore { get;}
+        public override bool IsDisplayOnly => false;
        
 
 
@@ -18,14 +19,12 @@ namespace Game.Combat.Action
             StatAfter = statAfter;
         }
 
-        public void Do()
+        public override void Do()
         {
-
            Reciever.Stats [AffectedStat] = StatAfter;
-
         }
 
-        public void Undo()
+        public override void Undo()
         {
             Reciever.Stats [AffectedStat] = StatBefore;
         }

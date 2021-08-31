@@ -7,7 +7,7 @@ namespace Game.UI
         public static Theme CurrentTheme = new Theme();
 
         public Color TextColor { get; set; } = Color.White;
-        public Color MainColor { get; set; } = Color.Gray;
+        public Color MainColor { get; set; } = Color.Gold;
         public Color AccentColor { get; set; } = Color.Gray;
         public Color HoveredColor { get; set; } = Color.Red;
         private Theme() {}

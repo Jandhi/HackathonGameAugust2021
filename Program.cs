@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using SadConsole;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Console = SadConsole.Console;
 using Game.UI.Combat;
 using Game.Combat;
@@ -28,6 +29,12 @@ namespace Game
 
         static void Init()
         {
+            var test = SadConsole.Game.Instance.Content.Load<SoundEffect>("Guitar");
+            var instance = test.CreateInstance();
+            instance.Pitch = -0.5f;
+            instance.Volume = 1f;
+            instance.Play();
+
             var console = new Console(GAME_WIDTH, GAME_HEIGHT);
             
             var entity1 = new Entity(new Game.UI.ColoredString("1", Color.Red), null, new List<Tag>{
@@ -48,12 +55,13 @@ namespace Game
             var ev = new SendDamageEvent(0, combat, root, entity1, null, null, 5, DamageType.Physical);
             var passive = new Passive<SendDamageEvent>(
                 name: new UI.ColoredString("test"), 
-                parent: entity2
+                parent: entity2,
+                messageCreator: (ev) => $"+100% damage"
             );
             passive.Filters.Add(ev => ev.Combat.IsOnSameSide(ev.Caster, passive.Parent));
             passive.Modifiers.Add(ev => ev.Damage *= 2f);
 
-            var passive2 = new Passive<SendDamageEvent>(new UI.ColoredString("test"), entity1);
+            var passive2 = new Passive<SendDamageEvent>(new UI.ColoredString("test"), entity1, (ev) => $"+100% damage");
             passive2.Filters.Add(ev => ev.Damage > 7);
             passive2.Modifiers.Add(ev => ev.Damage *= 2f);
 
