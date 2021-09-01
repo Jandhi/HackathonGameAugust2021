@@ -3,6 +3,7 @@ using Game.UI.Log;
 using Game.Combat;
 using System.Collections.Generic;
 using static Game.Util.ConsoleFunctions;
+using static Game.Audio.AudioManager;
 
 namespace Game.UI.Combat
 {
@@ -74,8 +75,12 @@ namespace Game.UI.Combat
                 SelectedEntityIndex = index;
                 EntityDisplay.Entity = Combat.Combatants[index];
                 DrawSelected();
+                Tap.CreateInstance().Play();
             };
-            hoverSurface.MouseEnter += (setter, args) => EnteredEntityFocus(index);
+            hoverSurface.MouseEnter += (setter, args) => {
+                EnteredEntityFocus(index);
+                Click.CreateInstance().Play();
+            };
             hoverSurface.MouseExit += (setter, args) => {
                 ExitedEntityFocus(index);
                 display.HealthBar.IsHovered = false;

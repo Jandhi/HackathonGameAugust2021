@@ -6,6 +6,7 @@ using Console = SadConsole.Console;
 using Game.UI.Combat;
 using Game.Combat;
 using Game.Combat.Event;
+using Game.Audio;
 
 namespace Game
 {
@@ -29,12 +30,7 @@ namespace Game
 
         static void Init()
         {
-            var test = SadConsole.Game.Instance.Content.Load<SoundEffect>("Guitar");
-            var instance = test.CreateInstance();
-            instance.Pitch = -0.5f;
-            instance.Volume = 0.25f;
-            instance.IsLooped = true;
-            instance.Play();
+            AudioManager.Init();
 
             var console = new Console(GAME_WIDTH, GAME_HEIGHT);
             

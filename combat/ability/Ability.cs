@@ -77,7 +77,7 @@ namespace Game.Combat.Ability
             return validTargets;
         }
 
-        public int PositionToIndex(Position position, Side side) => position switch
+        private int PositionToIndex(Position position, Side side) => position switch
         {
             Position.Front => side == Side.PLAYER ? 3 : 4,
             Position.MidFront => side == Side.PLAYER ? 2 : 5,
@@ -86,7 +86,7 @@ namespace Game.Combat.Ability
             _ => -1,
         };
         
-        public Position IndexToPosition(int index)
+        private Position IndexToPosition(int index)
         {
             if(index == 0 || index == 7) return Position.Back;
             if(index == 1 || index == 6) return Position.MidBack;
