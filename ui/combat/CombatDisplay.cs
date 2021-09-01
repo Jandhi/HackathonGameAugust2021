@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework;
 using Game.UI.Log;
 using Game.Combat;
+using System.Linq;
 using System.Collections.Generic;
 using static Game.Util.ConsoleFunctions;
 using static Game.Audio.AudioManager;
@@ -44,7 +45,14 @@ namespace Game.UI.Combat
                 }
             }));
 
-            Add((width, height) => new BorderedLayout(width, height), 0, 2);
+            var bottom = Add((width, height) => new BorderedLayout(width, height), 0, 2).Add((width, height) => new GravityLayout(width, height));
+            var bottomLayout = bottom.Add((width, height) => new GridLayout(width, height, 2, 1), 2, true, LayoutGravity.CENTER, 2, true, LayoutGravity.CENTER);
+            bottomLayout.XSegments[0].Weight = 1;
+            bottomLayout.XSegments[1].Weight = 5;
+            bottomLayout.CalculateDimensions();
+            bottomLayout.Add((width, height) => new RadioGroup(width, height, Combat.Combatants.Select(combatant => combatant.Name).ToList()));
+                
+
             EntityDisplay = Add((width, height) => new BorderedLayout(width, height), 1, 0, 1, 2)
                 .Add((width, height) => new GravityLayout(width, height))
                     .Add((width, height) => new EntityDisplay(width, height), 2, true, LayoutGravity.CENTER, 2, true, LayoutGravity.CENTER);

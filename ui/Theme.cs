@@ -19,5 +19,6 @@ namespace Game.UI
             HoveredColor = theme.HoveredColor;
         }
 
+        public Theme Copy() => new Theme(this);
     }
 }

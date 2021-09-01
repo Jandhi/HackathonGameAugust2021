@@ -1,5 +1,6 @@
 using System;
 using Microsoft.Xna.Framework;
+using SadConsole.Input;
 
 namespace Game.UI
 {
@@ -83,6 +84,11 @@ namespace Game.UI
             containee.Parent = this;
             Containee = containee;
             return containee;
+        }
+
+        public override bool ProcessMouse(MouseConsoleState state)
+        {
+            return Containee.ProcessMouse(state);
         }
     }
 }

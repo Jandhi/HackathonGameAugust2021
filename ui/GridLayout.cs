@@ -2,6 +2,7 @@ using SadConsole;
 using System;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using SadConsole.Input;
 
 namespace Game.UI
 {
@@ -140,6 +141,50 @@ namespace Game.UI
                 segment.Length += 1;
                 index++;
                 slackUsed++;
+            }
+        }
+
+        public override bool ProcessMouse(MouseConsoleState state)
+        {
+            var x = 0;
+            var cellX = XSegments[0].Length;
+
+            while(state.ConsoleCellPosition.X >= cellX)
+            {
+                x++;
+
+                if(GridWidth >= x)
+                {
+                    return base.ProcessMouse(state);
+                }
+
+                cellX += XSegments[x].Length;
+            }
+
+            var y = 0;
+            var cellY = YSegments[0].Length;
+
+            while(state.ConsoleCellPosition.Y >= cellY)
+            {
+                y++;
+
+                if(GridHeight >= y)
+                {
+                    return base.ProcessMouse(state);
+                }
+
+                cellY += YSegments[y].Length;
+            }
+
+            var containee = Containees[x, y];
+
+            if(containee == null)
+            {
+                return base.ProcessMouse(state);
+            }
+            else
+            {
+                return containee.ProcessMouse(state);
             }
         }
     }
