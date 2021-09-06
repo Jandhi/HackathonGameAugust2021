@@ -38,6 +38,9 @@ namespace Game
                 new Tag(new UI.ColoredString("tag", Color.BlueViolet)),
                 new Tag(new UI.ColoredString("tag2", Color.SpringGreen))
             });
+            entity1.Abilities.AddRange(new List<Game.Combat.Ability.Ability>{
+                new Game.Combat.Ability.DamageAbility(new UI.ColoredString("test", Color.GreenYellow), Combat.Ability.TargetType.Self, null, null)
+            });
             var entity2 = new Entity(new Game.UI.ColoredString("2", Color.Red), null);
             var entity3 = new Entity(new Game.UI.ColoredString("3", Color.Red), null);
             var entity4 = new Entity(new Game.UI.ColoredString("4", Color.Green), null);

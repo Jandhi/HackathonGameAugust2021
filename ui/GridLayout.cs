@@ -24,8 +24,8 @@ namespace Game.UI
 
         public GridLayout(int width, int height, int gridWidth, int gridHeight, bool isDistributingExtraSpace = true) : base(width, height)
         {
-            GridWidth = gridWidth;
-            GridHeight = gridHeight;
+            GridWidth = gridWidth < 1 ? 1 : gridWidth; // minimum 1 
+            GridHeight = gridHeight < 1 ? 1 : gridHeight; // minimum 1 
             XSegments = new GridLayoutSegment[gridWidth];
             YSegments = new GridLayoutSegment[gridHeight];
             Containees = new SadConsole.Console[gridWidth, gridHeight];
@@ -146,6 +146,11 @@ namespace Game.UI
 
         public override bool ProcessMouse(MouseConsoleState state)
         {
+            if(XSegments.Length == 0 || YSegments.Length == 0)
+            {
+                return base.ProcessMouse(state);
+            }
+
             var x = 0;
             var cellX = XSegments[0].Length;
 

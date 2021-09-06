@@ -12,12 +12,20 @@ namespace Game.UI.Combat
     {
 
         public Game.Combat.Combat Combat { get; }
+        // Middle Displays
         public GridLayout PositionsGrid { get; }
         public List<PositionDisplay> Positions { get; } = new List<PositionDisplay>();
         public List<SadConsole.Console> HoverSurfaces { get; } = new List<SadConsole.Console>();
-        public EntityDisplay EntityDisplay { get; }
         public int FocusedEntityIndex { get; set; }
         public int SelectedEntityIndex { get; set; }
+        public Entity SelectedEntity => Combat.Combatants[SelectedEntityIndex];
+        // Bottom Displays
+        public GridLayout BottomLayout { get; set; }
+        public AbilityDisplay AbilityDisplay { get; set; }
+        public RadioGroup AbilityGroup { get; set; }
+        // Side Display
+        public EntityDisplay EntityDisplay { get; }
+        
         public Theme Theme { get; }
 
         public CombatDisplay(int width, int height, Game.Combat.Combat combat, Theme theme = null) : base(width, height, 2, 3)
@@ -46,11 +54,12 @@ namespace Game.UI.Combat
             }));
 
             var bottom = Add((width, height) => new BorderedLayout(width, height), 0, 2).Add((width, height) => new GravityLayout(width, height));
-            var bottomLayout = bottom.Add((width, height) => new GridLayout(width, height, 2, 1), 2, true, LayoutGravity.CENTER, 2, true, LayoutGravity.CENTER);
-            bottomLayout.XSegments[0].Weight = 1;
-            bottomLayout.XSegments[1].Weight = 5;
-            bottomLayout.CalculateDimensions();
-            bottomLayout.Add((width, height) => new RadioGroup(width, height, Combat.Combatants.Select(combatant => combatant.Name).ToList()));
+            BottomLayout = bottom.Add((width, height) => new GridLayout(width, height, 2, 1), 2, true, LayoutGravity.CENTER, 2, true, LayoutGravity.CENTER);
+            BottomLayout.XSegments[0].Weight = 1;
+            BottomLayout.XSegments[1].Weight = 5;
+            BottomLayout.CalculateDimensions();
+            AbilityDisplay = BottomLayout.Add((width, height) => new AbilityDisplay(width, height, Theme), 1, 0);
+            CreateAbilityGroup();
                 
 
             EntityDisplay = Add((width, height) => new BorderedLayout(width, height), 1, 0, 1, 2)
@@ -81,8 +90,10 @@ namespace Game.UI.Combat
                     HoverSurfaces[SelectedEntityIndex].Clear();
                 }
                 SelectedEntityIndex = index;
-                EntityDisplay.Entity = Combat.Combatants[index];
+                EntityDisplay.Entity = SelectedEntity;
+                CreateAbilityGroup();
                 DrawSelected();
+
                 Tap.CreateInstance().Play();
             };
             hoverSurface.MouseEnter += (setter, args) => {
@@ -97,6 +108,22 @@ namespace Game.UI.Combat
                 display.HealthBar.IsHovered = IsInConsole(args.MouseState.WorldCellPosition, display.HealthBar);
             };
             HoverSurfaces.Add(hoverSurface);
+        }
+
+        private void CreateAbilityGroup()
+        {
+            if(AbilityGroup != null)
+            {
+                AbilityGroup.IsVisible = false;
+                AbilityGroup = null;
+            }
+
+            AbilityGroup = BottomLayout.Add((width, height) => new RadioGroup(width, height, SelectedEntity.Abilities.Select(ability => ability.Name).ToList()));
+            AbilityGroup.OnNewSelectionActions.Add((index) => {
+                AbilityDisplay.Ability = SelectedEntity.Abilities[index];
+            });
+
+            AbilityDisplay.Ability = SelectedEntity.Abilities.Count != 0 ? SelectedEntity.Abilities[0] : null;
         }
 
         private void EnteredEntityFocus(int index)
