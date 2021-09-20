@@ -48,6 +48,11 @@ namespace Game.UI
 
                 y++;
             }
+
+            if(Buttons.Count > 0) 
+            {
+                Draw();
+            }
         }
 
         public void Draw()

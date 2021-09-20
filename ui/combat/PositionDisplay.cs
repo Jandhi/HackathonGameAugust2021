@@ -25,6 +25,10 @@ namespace Game.UI.Combat
 
         public PositionDisplay(Entity entity, int width, int height) : base(width, height, PositionDisplayGridWidth, PositionDisplayGridHeight)
         {
+            if(entity == null)
+            {
+                return;
+            }
 
             SetupLayout();
 

@@ -165,6 +165,12 @@ namespace Game.UI
                     list.Add(currentWord);
                     currentWord = "";
                 }
+                else if(currentWord.EndsWith("[c:"))
+                {
+                    list.Add(currentWord.Substring(0, currentWord.Length - 3));
+                    currentWord = "[c:";
+                    currentWord += c;
+                }
                 else
                 {
                     currentWord += c;

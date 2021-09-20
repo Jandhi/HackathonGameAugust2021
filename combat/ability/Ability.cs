@@ -30,7 +30,7 @@ namespace Game.Combat.Ability
         }
         public AbilityResult Use(int depth, Combat combat, Entity caster, List<Entity> targets)
         {
-            var root = new AbilityResult(caster);
+            var root = new AbilityResult(this, caster);
 
             var useAbilityEvent = new UseAbilityEvent(depth, combat, root, caster, this);
             useAbilityEvent.Broadcast();

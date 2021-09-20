@@ -7,6 +7,7 @@ using Game.UI.Combat;
 using Game.Combat;
 using Game.Combat.Event;
 using Game.Audio;
+using Game.Combat.Action;
 
 namespace Game
 {
@@ -33,39 +34,10 @@ namespace Game
             AudioManager.Init();
 
             var console = new Console(GAME_WIDTH, GAME_HEIGHT);
-            
-            var entity1 = new Entity(new Game.UI.ColoredString("1", Color.Red), null, new List<Tag>{
-                new Tag(new UI.ColoredString("tag", Color.BlueViolet)),
-                new Tag(new UI.ColoredString("tag2", Color.SpringGreen))
-            });
-            entity1.Abilities.AddRange(new List<Game.Combat.Ability.Ability>{
-                new Game.Combat.Ability.DamageAbility(new UI.ColoredString("test", Color.GreenYellow), Combat.Ability.TargetType.Self, null, null)
-            });
-            var entity2 = new Entity(new Game.UI.ColoredString("2", Color.Red), null);
-            var entity3 = new Entity(new Game.UI.ColoredString("3", Color.Red), null);
-            var entity4 = new Entity(new Game.UI.ColoredString("4", Color.Green), null);
-            var entity5 = new Entity(new Game.UI.ColoredString("5", Color.Azure), null);
-            var entity6 = new Entity(new Game.UI.ColoredString("6", Color.Beige), null);
-            var entity7 = new Entity(new Game.UI.ColoredString("7", Color.Yellow), null);
-            var entity8 = new Entity(new Game.UI.ColoredString("8", Color.YellowGreen), null);
+            var entity4 = new Entity(new Game.UI.ColoredString("Ratman", Color.Gray), null);
+            var entity5 = new Entity(new Game.UI.ColoredString("Lizardman", Color.Green), null);
 
-            var combat = new Combat.Combat(new List<Entity>() {entity1, entity2, entity3, entity4, entity5, entity6, entity7, entity8});
-
-            var root = new Combat.Action.AbilityResult(entity1);
-            var ev = new SendDamageEvent(0, combat, root, entity1, null, null, 5, DamageType.Physical);
-            var passive = new Passive<SendDamageEvent>(
-                name: new UI.ColoredString("test"), 
-                parent: entity2,
-                messageCreator: (ev) => $"+100% damage"
-            );
-            passive.Filters.Add(ev => ev.Combat.IsOnSameSide(ev.Caster, passive.Parent));
-            passive.Modifiers.Add(ev => ev.Damage *= 2f);
-
-            var passive2 = new Passive<SendDamageEvent>(new UI.ColoredString("test"), entity1, (ev) => $"+100% damage");
-            passive2.Filters.Add(ev => ev.Damage > 7);
-            passive2.Modifiers.Add(ev => ev.Damage *= 2f);
-
-            ev.Broadcast();
+            var combat = new Combat.Combat(new List<Entity>() {null, null, null, entity4, entity5, null, null, null});
 
             var display = new CombatDisplay(GAME_WIDTH, GAME_HEIGHT, combat);
             display.Parent = console;

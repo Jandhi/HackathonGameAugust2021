@@ -15,7 +15,6 @@ namespace Game.Combat {
     public class Combat {
         public List<Entity> Combatants { get; }
         public List<Entity> Initiative { get; set; }
-        public Queue<ICombatAction> Actions { get; set; }
         public Log Log { get; } = new Log();
 
         public Combat(List<Entity> combatants) {

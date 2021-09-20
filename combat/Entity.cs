@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Game.Combat.Event;
 using Game.UI;
-using Game.Combat.Ability;
+using Game.Combat.Action;
 
 namespace Game.Combat {
     public class Entity : ICombatEventListener, INamed {
@@ -24,6 +24,23 @@ namespace Game.Combat {
         public void Receive(CombatEvent ev) 
         {
             ev.Broadcast(Passives);
+        }
+
+        public TookDamageEvent ReceiveDamage(SendDamageEvent ev)
+        {
+            var receiveDamage = new ReceiveDamageEvent(ev, this);
+            receiveDamage.Broadcast();
+
+            if(receiveDamage.IsGoingThrough)
+            {
+                var health = Stats[Stat.Health];
+                ev.Root.ActionQueue.Enqueue(new StatChange(this, Stat.Health, health, health - receiveDamage.Damage));
+                return new TookDamageEvent(receiveDamage);
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

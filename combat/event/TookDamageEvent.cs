@@ -18,5 +18,14 @@ namespace Game.Combat.Event
             Damage = damage;
             Type = type;
         }
+
+        public TookDamageEvent(ReceiveDamageEvent ev) : base(ev.Depth, ev.Combat, ev.Root)
+        {
+            Caster = ev.Caster;
+            Receiver = ev.Receiver;
+            Ability = ev.Ability;
+            Damage = ev.Damage;
+            Type = ev.Type;
+        }
     }
 }

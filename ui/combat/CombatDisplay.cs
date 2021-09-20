@@ -39,6 +39,7 @@ namespace Game.UI.Combat
             for(var i = 0; i < 8; i++)
             {
                 var entity = combat.Combatants[i];
+
                 var display = PositionsGrid.Add((width, height) => new PositionDisplay(entity, width, height), i, 0);
                 Positions.Add(display);
 
@@ -48,6 +49,11 @@ namespace Game.UI.Combat
             Add((width, height) => new BorderedLayout(width, height)).Add((width, height) => new Button("test", () => {
                 foreach(var entity in Combat.Combatants)
                 {
+                    if(entity == null)
+                    {
+                        continue;
+                    }
+
                     entity.Stats[Stat.MaxHealth] = 5;
                     entity.Stats[Stat.Health] = new System.Random().Next(6);
                 }
@@ -94,7 +100,9 @@ namespace Game.UI.Combat
                 CreateAbilityGroup();
                 DrawSelected();
 
-                Tap.CreateInstance().Play();
+                var tap = Tap.CreateInstance();
+                tap.Volume = 1;
+                tap.Play();
             };
             hoverSurface.MouseEnter += (setter, args) => {
                 EnteredEntityFocus(index);
@@ -102,10 +110,16 @@ namespace Game.UI.Combat
             };
             hoverSurface.MouseExit += (setter, args) => {
                 ExitedEntityFocus(index);
-                display.HealthBar.IsHovered = false;
+                if(Combat.Combatants[index] != null)
+                {
+                    display.HealthBar.IsHovered = false;
+                }
             };
             hoverSurface.MouseMove += (setter, args) => {
-                display.HealthBar.IsHovered = IsInConsole(args.MouseState.WorldCellPosition, display.HealthBar);
+                if(Combat.Combatants[index] != null)
+                {
+                    display.HealthBar.IsHovered = IsInConsole(args.MouseState.WorldCellPosition, display.HealthBar);
+                }
             };
             HoverSurfaces.Add(hoverSurface);
         }
@@ -116,6 +130,11 @@ namespace Game.UI.Combat
             {
                 AbilityGroup.IsVisible = false;
                 AbilityGroup = null;
+            }
+
+            if(SelectedEntity == null)
+            {
+                return;
             }
 
             AbilityGroup = BottomLayout.Add((width, height) => new RadioGroup(width, height, SelectedEntity.Abilities.Select(ability => ability.Name).ToList()));
@@ -136,6 +155,11 @@ namespace Game.UI.Combat
 
         private void DrawSelectionBox(int index, Color color)
         {
+            if(Combat.Combatants[index] == null)
+            {
+                return;
+            }
+
             var surface = HoverSurfaces[index];
             surface.SetGlyph(0, surface.Height - 5, Border.TopLeft, color);
             surface.SetGlyph(0, surface.Height - 4, Border.Vertical, color);
