@@ -8,7 +8,7 @@ namespace Game.Combat
 {
     public class Passive : Passive<CombatEvent>
     {
-        public Passive(ColoredString name, Entity parent, Func<CombatEvent, string> messageCreator) : base(name, parent, messageCreator)
+        public Passive(string name, Entity parent, Func<CombatEvent, string> messageCreator) : base(name, parent, messageCreator)
         {
         }
     }
@@ -18,7 +18,7 @@ namespace Game.Combat
         public List<Func<T, bool>> Filters { get; } = new List<Func<T, bool>>();
         public List<Action<T>> Modifiers { get; } = new List<Action<T>>();
         public Func<T, string> MessageCreator { get; }
-        public Passive(ColoredString name, Entity parent, Func<T, string> messageCreator) : base(name, parent)
+        public Passive(string name, Entity parent, Func<T, string> messageCreator) : base(name, parent)
         {
             MessageCreator = messageCreator;
         }
@@ -47,10 +47,10 @@ namespace Game.Combat
 
     public abstract class PassiveBase : ICombatEventListener, INamed
     {
-        public ColoredString Name { get; }
+        public string Name { get; }
         public Entity Parent { get; set; }
 
-        public PassiveBase(ColoredString name, Entity parent)
+        public PassiveBase(string name, Entity parent)
         {   
             Name = name;
             Parent = parent;

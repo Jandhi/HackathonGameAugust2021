@@ -5,6 +5,6 @@ namespace Game.Combat.Ability
 {
     public abstract class AbilityComponent
     {
-        public abstract void Execute(Ability ability, int depth, Combat combat, AbilityResult root, Entity caster, List<Entity> targets);
+        public abstract void Execute(int seed, int depth, Combat combat, ActionRoot root, Entity caster, List<Entity> targets);
     }
 }

@@ -7,7 +7,7 @@ namespace Game.Combat
     {
         public override string Look => "@";
 
-        public Player(ColoredString name, StatBlock stats) : base(name, stats)
+        public Player(string name, StatBlock stats) : base(name, stats)
         {
             
         }

@@ -8,7 +8,7 @@ namespace Game.Combat.Event
         public Entity Killer { get; }
         public bool IsGoingThrough { get; set; } = true;
 
-        public ReceiveDeathEvent(int depth, Combat combat, AbilityResult root, Entity receiver, Entity killer) : base(depth, combat, root)
+        public ReceiveDeathEvent(int depth, Combat combat, ActionRoot root, Entity receiver, Entity killer) : base(depth, combat, root)
         {
             Receiver = receiver;
             Killer = killer;

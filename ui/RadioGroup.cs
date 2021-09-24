@@ -24,7 +24,7 @@ namespace Game.UI
         }
         public List<Action<int>> OnNewSelectionActions { get; }
         
-        public RadioGroup(int width, int height, List<ColoredString> items, Theme theme = null, params Action<int>[] onNewSelectionActions) : base(width, height, 1, items.Count)
+        public RadioGroup(int width, int height, List<string> items, Theme theme = null, params Action<int>[] onNewSelectionActions) : base(width, height, 1, items.Count)
         {
             Theme = theme ?? Theme.CurrentTheme;
             OnNewSelectionActions = new List<Action<int>>(onNewSelectionActions);
@@ -40,9 +40,9 @@ namespace Game.UI
             foreach (var item in items)
             {
                 var index = y;
-                var button = Add((width, height) => new GravityLayout(width, height), 0, y).Add((width, height) => new Button(item, () => {
+                var button = Add((width, height) => new GravityLayout(width, height), 0, y).Add((width, height) => new Button(ColoredString.From(item), () => {
                     SelectedIndex = index;
-                }, width, height), 2, true, LayoutGravity.CENTER);
+                }), 2, true, LayoutGravity.CENTER);
                 Buttons.Add(button);
                 button.Draw();
 
@@ -61,7 +61,7 @@ namespace Game.UI
 
             var button = Buttons[SelectedIndex];
             var y = button.Parent.Position.Y;
-            var x = button.Text.Length + 1;
+            var x = ColoredString.GetLength(button.Text) + 1;
             Print(0, y, "<", Theme.MainColor);
             Print(x, y, ">", Theme.MainColor);
         }

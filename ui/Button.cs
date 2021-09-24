@@ -12,7 +12,7 @@ namespace Game.UI
         public Theme Theme { get; }
         public bool IsHovered { get; set; } = false;
 
-        public Button(ColoredString text, Action action, int width = -1, int height = -1) : this(text.Contents, action, width == -1 ? text.Contents.Length : width, height == -1 ? 1 : height)
+        public Button(ColoredString text, Action action, int width = -1, int height = -1) : this(text.Contents, action, width == -1 ? ColoredString.GetLength(text.Contents) : width, height == -1 ? 1 : height)
         {
             Theme = Theme.Copy();
             Theme.TextColor = text.Foreground;
@@ -32,6 +32,7 @@ namespace Game.UI
             Theme = theme ?? Theme.CurrentTheme;
             Action = action;
             Text = text;
+            UsePrintProcessor = true;
             Draw();
         }
 

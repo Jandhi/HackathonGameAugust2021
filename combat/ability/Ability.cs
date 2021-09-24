@@ -5,44 +5,43 @@ using Game.Combat.Action;
 
 namespace Game.Combat.Ability
 {
-    public enum TargetType
-    {
-        Self, Allies, Opponents, Any
-    }
     
-    public enum Position
-    {
-        Front, MidFront, MidBack, Back
-    }
 
-    public abstract class Ability : INamed
+    public class Ability : INamed
     {
-        public ColoredString Name { get; }
+        public string Name { get; }
         public TargetType Target { get; }
         public List<Position> TargetPositions { get; }
         public List<Position> CasterPositions { get; }
-        public Ability(ColoredString name, TargetType target, List<Position> targetPositions, List<Position> casterPositions)
+        public List<AbilityComponent> Components { get; }
+        public Ability(string name, TargetType target, List<Position> targetPositions, List<Position> casterPositions, params AbilityComponent[] components)
         {
             Name = name;
             Target = target;
             TargetPositions = targetPositions;
             CasterPositions = casterPositions;
+            Components = new List<AbilityComponent>(components);
         }
-        public AbilityResult Use(int depth, Combat combat, Entity caster, List<Entity> targets)
+
+        public ActionRoot Use(int seed, int depth, Combat combat, Entity caster, params Entity[] targets)
         {
-            var root = new AbilityResult(this, caster);
+            return Use(seed, depth, combat, caster, new List<Entity>(targets));
+        }
+
+        public ActionRoot Use(int seed, int depth, Combat combat, Entity caster, List<Entity> targets)
+        {
+            var root = new ActionRoot(this, caster);
+            root.ActionQueue.Enqueue(new LogAction(combat.Log, $"{caster.Name} uses {this.Name}"));
 
             var useAbilityEvent = new UseAbilityEvent(depth, combat, root, caster, this);
             useAbilityEvent.Broadcast();
             
             if(useAbilityEvent.IsGoingThrough) {
-                Execute(depth, combat, root, caster, targets);
+                Components.ForEach(component => component.Execute(seed, depth, combat, root, caster, targets));
             }
 
             return root;
         }
-
-        public abstract void Execute(int depth, Combat combat, AbilityResult root, Entity caster, List<Entity> targets);
 
         public bool CanCastFromPosition(Entity caster, Combat combat)
         {

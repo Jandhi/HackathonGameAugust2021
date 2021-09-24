@@ -10,11 +10,11 @@ namespace Game.Combat.Event
         public float Damage { get; set; }
         public DamageType Type { get; }
 
-        public TookDamageEvent(int depth, Combat combat, AbilityResult root, Entity caster, Entity receiver, Ability.Ability ability, int damage, DamageType type) : base(depth, combat, root)
+        public TookDamageEvent(int depth, Combat combat, ActionRoot root, Entity caster, Entity receiver, int damage, DamageType type) : base(depth, combat, root)
         {
             Caster = caster;
             Receiver = receiver;
-            Ability = ability;
+            Ability = root.Ability;
             Damage = damage;
             Type = type;
         }

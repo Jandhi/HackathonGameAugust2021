@@ -12,11 +12,11 @@ namespace Game.Combat.Event
         public DamageType Type { get; }
         public bool IsGoingThrough { get; set; } = true;
 
-        public SendDamageEvent(int depth, Combat combat, AbilityResult root, Entity caster, List<Entity> targets, Ability.Ability ability, float damage, DamageType type) : base(depth, combat, root)
+        public SendDamageEvent(int depth, Combat combat, ActionRoot root, Entity caster, List<Entity> targets, float damage, DamageType type) : base(depth, combat, root)
         {
             Caster = caster;
             Targets = targets;
-            Ability = ability;
+            Ability = root.Ability;
             Damage = damage;
             Type = type;
         }

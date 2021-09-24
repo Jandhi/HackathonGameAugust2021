@@ -5,14 +5,37 @@ using System.Collections.Generic;
 
 namespace Game.Combat.Ability
 {
-    public class DamageComponent
+    public class StaticDamageComponent : DamageComponent
     {
         public float Damage { get; }
         public DamageType Type { get; }
 
-        public void Execute(Ability ability, int depth, Combat combat, AbilityResult root, Entity caster, List<Entity> targets)
+        public StaticDamageComponent(float damage, DamageType type)
         {
-            var sendDamageEvent = new SendDamageEvent(depth, combat, root, caster, targets, ability, Damage, Type);
+            Damage = damage;
+            Type = type;
+        }
+
+        public override float GetDamage(int seed, int depth, Combat combat, ActionRoot root, Entity caster, List<Entity> targets)
+        {
+            return Damage;
+        }
+
+        public override DamageType GetDamageType(int seed, int depth, Combat combat, ActionRoot root, Entity caster, List<Entity> targets)
+        {
+            return Type;
+        }
+    }
+
+    public abstract class DamageComponent : AbilityComponent
+    {
+        public abstract float GetDamage(int seed, int depth, Combat combat, ActionRoot root, Entity caster, List<Entity> targets);
+        public abstract DamageType GetDamageType(int seed, int depth, Combat combat, ActionRoot root, Entity caster, List<Entity> targets);
+        public override void Execute(int seed, int depth, Combat combat, ActionRoot root, Entity caster, List<Entity> targets)
+        {
+            var damage = GetDamage(seed, depth, combat, root, caster, targets);
+            var type = GetDamageType(seed, depth, combat, root, caster, targets);
+            var sendDamageEvent = new SendDamageEvent(depth, combat, root, caster, targets, damage, type);
             combat.BroadcastCombatEvent(sendDamageEvent);
 
             if(!sendDamageEvent.IsGoingThrough)

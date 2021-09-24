@@ -34,5 +34,11 @@ namespace Game.Combat
                 Listeners.ForEach(listener => listener.NotifyStatChange(Parent, stat, oldValue, value));
             }
         }
+
+        public StatBlock With(Stat stat, float value)
+        {
+            this[stat] = value;
+            return this;
+        }
     }
 }

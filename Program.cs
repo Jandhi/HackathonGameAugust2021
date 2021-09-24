@@ -7,7 +7,7 @@ using Game.UI.Combat;
 using Game.Combat;
 using Game.Combat.Event;
 using Game.Audio;
-using Game.Combat.Action;
+using Game.Combat.Ability;
 
 namespace Game
 {
@@ -34,8 +34,22 @@ namespace Game
             AudioManager.Init();
 
             var console = new Console(GAME_WIDTH, GAME_HEIGHT);
-            var entity4 = new Entity(new Game.UI.ColoredString("Ratman", Color.Gray), null);
-            var entity5 = new Entity(new Game.UI.ColoredString("Lizardman", Color.Green), null);
+            var entity4 = new Entity(new Game.UI.ColoredString("Ratman", Color.Gray).ToString(), new StatBlock().With(Stat.MaxHealth, 10).With(Stat.Health, 10));
+            var entity5 = new Entity(new Game.UI.ColoredString("Lizardman", Color.Green).ToString(), new StatBlock().With(Stat.MaxHealth, 10).With(Stat.Health, 10));
+
+            entity4.Abilities.Add(new Ability(
+                name: new UI.ColoredString("Fireball", Color.OrangeRed).ToString(), 
+                target: TargetType.Opponents, 
+                targetPositions : Target.AllPositions, 
+                casterPositions : Target.AllPositions, 
+                components : new StaticDamageComponent(3, DamageType.Fire)));
+
+            entity4.Abilities.Add(new Ability(
+                name: new UI.ColoredString("Lightning Bolt", Color.LightSkyBlue).ToString(), 
+                target: TargetType.Opponents, 
+                targetPositions : Target.AllPositions, 
+                casterPositions : Target.AllPositions, 
+                components : new StaticDamageComponent(4, DamageType.Physical)));
 
             var combat = new Combat.Combat(new List<Entity>() {null, null, null, entity4, entity5, null, null, null});
 

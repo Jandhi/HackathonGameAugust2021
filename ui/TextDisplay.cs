@@ -49,6 +49,11 @@ namespace Game.UI
                 var word = words[0];
                 words.RemoveAt(0);
 
+                if(word == "")
+                {
+                    continue;
+                }
+
                 if(word.StartsWith("[c:")) // command
                 {
                     line += word;
@@ -78,7 +83,13 @@ namespace Game.UI
                 else
                 {
                     line += word;
+                    line += " ";
                 }
+            }
+
+            if(line.EndsWith(" "))
+            {
+                line = line.TrimEnd();
             }
 
             if(line != "") {

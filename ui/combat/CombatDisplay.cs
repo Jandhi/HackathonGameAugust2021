@@ -47,16 +47,9 @@ namespace Game.UI.Combat
             }
 
             Add((width, height) => new BorderedLayout(width, height)).Add((width, height) => new Button("test", () => {
-                foreach(var entity in Combat.Combatants)
-                {
-                    if(entity == null)
-                    {
-                        continue;
-                    }
-
-                    entity.Stats[Stat.MaxHealth] = 5;
-                    entity.Stats[Stat.Health] = new System.Random().Next(6);
-                }
+                var entity = Combat.Combatants[3];
+                var root = entity.Abilities[0].Use(0, 0, Combat, entity, Combat.Combatants[4]);
+                root.Do(true);
             }));
 
             var bottom = Add((width, height) => new BorderedLayout(width, height), 0, 2).Add((width, height) => new GravityLayout(width, height));

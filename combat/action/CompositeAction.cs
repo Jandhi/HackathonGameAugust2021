@@ -5,7 +5,7 @@ namespace Game.Combat.Action
     public class CompositeCombatAction : ICombatAction
     {
 
-        public List<ICombatAction> Actions { get; }
+        public virtual List<ICombatAction> Actions { get; }
 
         public CompositeCombatAction(List<ICombatAction> actions = null)
         {

@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 
 namespace Game.UI
 {
@@ -189,6 +190,93 @@ namespace Game.UI
         {
             var random = new Random();
             return new Color(random.Next(256),random.Next(256),random.Next(256));
+        }
+
+        public ColoredString Transform(Func<string, string> transform)
+        {
+            var words = GetWords(this.ToString());
+            var result = "";
+
+            foreach(var word in words)
+            {
+                if(word.StartsWith("[c:"))
+                {
+                    result += word;
+                }
+                else
+                {
+                    result += transform(word) + " ";
+                }
+            }
+
+            if(result.EndsWith(" "))
+            {
+                result = result.TrimEnd();
+            }
+
+            return new ColoredString(result);
+        }
+
+        public static ColoredString From(string text)
+        {
+            var newText = "";
+            var foreground = Color.White;
+            var hasForeground = false;
+            var background = Color.Black;
+            var hasBackground = false;
+            var isFirstRealWord = true;
+
+            var words = ColoredString.GetWords(text);
+
+            foreach(var word in words)
+            {
+                if(word.StartsWith("[c:r f:"))
+                {
+                    var colors = word.Substring(7, word.Length - 8).Split(",").Select(str => int.Parse(str)).ToArray();
+                    hasForeground = true;
+                    foreground = new Color(colors[0], colors[1], colors[2], colors[3]);
+                }
+                else if(word.StartsWith("[c:r b:"))
+                {
+                    var colors = word.Substring(7, word.Length - 8).Split(",").Select(str => int.Parse(str)).ToArray();
+                    hasBackground = true;
+                    background = new Color(colors[0], colors[1], colors[2], colors[3]);
+                }
+                else
+                {
+                    if(!word.StartsWith("[c:"))
+                    {
+                        if(isFirstRealWord)
+                        {
+                            isFirstRealWord = false;
+                        }
+                        else
+                        {
+                            newText += " ";
+                        }
+                    }
+
+                    newText += word;
+                }
+            }
+
+            if(newText.EndsWith(" "))
+            {
+                newText = newText.TrimEnd();
+            }
+
+            if(hasBackground)
+            {
+                return new ColoredString(newText, foreground, background);
+            }
+            else if(hasForeground)
+            {
+                return new ColoredString(newText, foreground);
+            }
+            else
+            {
+                return new ColoredString(newText);
+            }
         }
     }
 }

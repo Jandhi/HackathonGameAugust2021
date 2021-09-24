@@ -3,6 +3,7 @@ using System;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using SadConsole.Input;
+using static Game.Util.ConsoleFunctions;
 
 namespace Game.UI
 {
@@ -189,7 +190,14 @@ namespace Game.UI
             }
             else
             {
-                return containee.ProcessMouse(state);
+                if(IsInConsole(state.WorldCellPosition, containee))
+                {
+                    return containee.ProcessMouse(state);
+                }
+                else
+                {
+                    return base.ProcessMouse(state);
+                }
             }
         }
     }

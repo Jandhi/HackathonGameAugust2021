@@ -1,4 +1,5 @@
 using Game.Combat.Ability;
+using Game.UI;
 
 namespace Game.UI.Combat
 {
@@ -31,12 +32,17 @@ namespace Game.UI.Combat
         {
             Clear();
 
+            for(int y = 0; y < Height; y++)
+            {
+                Print(0, y, "|", Theme.AccentColor);
+            }
+
             if(Ability == null) // nothing to draw
             {
                 return;
             }
-
-            Print(0, 0, Ability.Name.ToString());
+            
+            Print(3, 0, ColoredString.From(Ability.Name).Transform(s => s.ToUpper()).ToString());
         }
     }
 }

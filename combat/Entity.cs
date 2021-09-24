@@ -6,7 +6,7 @@ using Game.Combat.Action;
 namespace Game.Combat {
     public class Entity : ICombatEventListener, INamed {
 
-        public ColoredString Name { get; }
+        public string Name { get; }
         public virtual string Look { get; }
         public StatBlock Stats { get; }
         public List<ICombatEventListener> Passives { get; } = new List<ICombatEventListener>();
@@ -14,7 +14,7 @@ namespace Game.Combat {
         public bool IsDead => Stats[Stat.Health] <= 0;
         public List<Ability.Ability> Abilities { get; } = new List<Ability.Ability>();
 
-        public Entity(ColoredString name, StatBlock stats, List<Tag> tags = null){
+        public Entity(string name, StatBlock stats, List<Tag> tags = null){
             Name = name;
             Stats = stats ?? new StatBlock();
             Stats.Parent = this;
@@ -35,6 +35,7 @@ namespace Game.Combat {
             {
                 var health = Stats[Stat.Health];
                 ev.Root.ActionQueue.Enqueue(new StatChange(this, Stat.Health, health, health - receiveDamage.Damage));
+                ev.Root.ActionQueue.Enqueue(new LogAction(ev.Combat.Log, $"{this.Name} takes {receiveDamage.Damage} damage"));
                 return new TookDamageEvent(receiveDamage);
             }
             else
