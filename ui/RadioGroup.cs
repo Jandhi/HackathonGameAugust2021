@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System;
 using System.Linq;
+using Game.Util;
 
 namespace Game.UI
 {
@@ -8,26 +9,17 @@ namespace Game.UI
     {
         public Theme Theme { get; }
         public List<Button> Buttons { get; } = new List<Button>();
-        private int selectedIndex;
-        public int SelectedIndex 
-        { 
-            get
-            {
-                return selectedIndex;
-            } 
-            set
-            {
-                selectedIndex = value;
-                OnNewSelectionActions.ForEach(action => action(selectedIndex));
-                Draw();
-            }
-        }
-        public List<Action<int>> OnNewSelectionActions { get; }
+        public VariableContainer<int> Selection { get; } = new VariableContainer<int>{ State = 0 };
         
-        public RadioGroup(int width, int height, List<string> items, Theme theme = null, params Action<int>[] onNewSelectionActions) : base(width, height, 1, items.Count)
+        public RadioGroup(int width, int height, List<string> items, Theme theme = null, params VariableContainer<int>.StateChangeHandler[] selectionHandlers) : base(width, height, 1, items.Count)
         {
             Theme = theme ?? Theme.CurrentTheme;
-            OnNewSelectionActions = new List<Action<int>>(onNewSelectionActions);
+
+            foreach (var handler in selectionHandlers)
+            {
+                Selection.StateChangeEvent += handler;
+            }
+            Selection.StateChangeEvent += (obj, args) => Draw();
 
             foreach (var segment in YSegments)
             {
@@ -41,7 +33,7 @@ namespace Game.UI
             {
                 var index = y;
                 var button = Add((width, height) => new GravityLayout(width, height), 0, y).Add((width, height) => new Button(ColoredString.From(item), () => {
-                    SelectedIndex = index;
+                    Selection.State = index;
                 }), 2, true, LayoutGravity.CENTER);
                 Buttons.Add(button);
                 button.Draw();
@@ -59,7 +51,7 @@ namespace Game.UI
         {
             Clear();
 
-            var button = Buttons[SelectedIndex];
+            var button = Buttons[Selection];
             var y = button.Parent.Position.Y;
             var x = ColoredString.GetLength(button.Text) + 1;
             Print(0, y, "<", Theme.MainColor);

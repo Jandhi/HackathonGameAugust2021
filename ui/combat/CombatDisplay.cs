@@ -131,9 +131,9 @@ namespace Game.UI.Combat
             }
 
             AbilityGroup = BottomLayout.Add((width, height) => new RadioGroup(width, height, SelectedEntity.Abilities.Select(ability => ability.Name).ToList()));
-            AbilityGroup.OnNewSelectionActions.Add((index) => {
-                AbilityDisplay.Ability = SelectedEntity.Abilities[index];
-            });
+            AbilityGroup.Selection.StateChangeEvent += (obj, args) => {
+                AbilityDisplay.Ability = SelectedEntity.Abilities[args.Current];
+            };
 
             AbilityDisplay.Ability = SelectedEntity.Abilities.Count != 0 ? SelectedEntity.Abilities[0] : null;
         }
@@ -144,6 +144,25 @@ namespace Game.UI.Combat
             if(index != SelectedEntityIndex) {
                 DrawSelectionBox(index, Theme.AccentColor);
             }
+        }
+        private void ExitedEntityFocus(int index)
+        {
+            HoverSurfaces[index].Clear();
+
+            if(FocusedEntityIndex == index)
+            {
+                FocusedEntityIndex = -1;
+            }
+
+            if(SelectedEntityIndex == index)
+            {
+                DrawSelected();
+            }
+        }
+
+        private void DrawSelected()
+        {
+            DrawSelectionBox(SelectedEntityIndex, Theme.MainColor);
         }
 
         private void DrawSelectionBox(int index, Color color)
@@ -163,26 +182,6 @@ namespace Game.UI.Combat
             surface.SetGlyph(surface.Width - 1, surface.Height - 4, Border.Vertical, color);
             surface.SetGlyph(surface.Width - 1, surface.Height - 3, Border.Vertical, color);
             surface.SetGlyph(surface.Width - 1, surface.Height - 2, Border.BottomRight, color);
-        }
-
-        private void ExitedEntityFocus(int index)
-        {
-            HoverSurfaces[index].Clear();
-
-            if(FocusedEntityIndex == index)
-            {
-                FocusedEntityIndex = -1;
-            }
-
-            if(SelectedEntityIndex == index)
-            {
-                DrawSelected();
-            }
-        }
-
-        private void DrawSelected()
-        {
-            DrawSelectionBox(SelectedEntityIndex, Theme.MainColor);
         }
     }
 }
