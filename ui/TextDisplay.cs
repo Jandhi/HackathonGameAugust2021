@@ -1,9 +1,12 @@
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Game.UI
 {
     public class TextDisplay : SadConsole.Console, IUIElement
     {
+        public static readonly string[] Punctuation = {",", ".", "'", "?", "!"};
+
         public Theme Theme { get; }
         public List<string> Lines { get; set; }
         public virtual int MaxLineLength => Width;
@@ -43,6 +46,7 @@ namespace Game.UI
             var lines = new List<string>();
             var line = "";
             var words = ColoredString.GetWords(Text);
+            var commands = "";
 
             while(words.Count > 0)
             {
@@ -56,23 +60,27 @@ namespace Game.UI
 
                 if(word.StartsWith("[c:")) // command
                 {
+                    commands += word;
                     line += word;
                 }
                 else if(word == "\n")
                 {
+                    line += commands;
                     lines.Add(line);
                     line = "";
                 }
                 else if(word.Length > MaxLineLength) // word exceeds length of a line
                 {
                     var space = MaxLineLength - ColoredString.GetLength(line);
+                    line += commands;
                     line += word.Substring(0, space);
                     words.Insert(0, word.Substring(space)); // add rest of word for future processing
+                    // commands is not cleared so the rest of the word receives the commands too
                 }
                 else if(ColoredString.GetLength(line) + word.Length > MaxLineLength) // line with word would be too long
                 {
                     lines.Add(line);
-                    line = word;
+                    line = commands + word;
 
                     // Add space after word
                     if(line.Length < MaxLineLength)
@@ -82,21 +90,37 @@ namespace Game.UI
                 }
                 else
                 {
+
                     line += word;
-                    line += " ";
+
+                    // Only add space if next real word doesn't start with punctuation
+                    if(!Punctuation.Any(punc => NextRealWord(words).StartsWith(punc)))
+                    {
+                        line += " ";
+                    }
                 }
             }
 
-            if(line.EndsWith(" "))
-            {
-                line = line.TrimEnd();
-            }
+            line = line.TrimEnd();
 
             if(line != "") {
                 lines.Add(line);
             }
 
             return lines;
+        }
+
+        private string NextRealWord(List<string> words)
+        {
+            foreach(var word in words)
+            {
+                if(!word.StartsWith("[c:"))
+                {
+                    return word;
+                }
+            }
+
+            return "";
         }
 
         public List<string> CalculateLinesWithoutWrapping()

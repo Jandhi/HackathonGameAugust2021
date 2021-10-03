@@ -192,6 +192,11 @@ namespace Game.UI
             return new Color(random.Next(256),random.Next(256),random.Next(256));
         }
 
+        public static string Transform(string source, Func<string, string> transform)
+        {
+            return ColoredString.From(source).Transform(transform).ToString();
+        }
+
         public ColoredString Transform(Func<string, string> transform)
         {
             var words = GetWords(this.ToString());

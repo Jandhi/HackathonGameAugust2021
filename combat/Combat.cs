@@ -3,6 +3,7 @@ using System.Linq;
 using Game.Combat.Event;
 using Game.Combat.Action;
 using Game.UI.Log;
+using Game.Util;
 
 namespace Game.Combat {
     public enum Side
@@ -14,11 +15,20 @@ namespace Game.Combat {
 
     public class Combat {
         public List<Entity> Combatants { get; }
-        public List<Entity> Initiative { get; set; }
+        public VariableContainer<Entity> Current { get; set; }
+        public List<Entity> Initiative { get; set; } = new List<Entity>();
         public Log Log { get; } = new Log();
 
-        public Combat(List<Entity> combatants) {
+        public Combat(List<Entity> combatants) 
+        {
             Combatants = combatants;
+            StartNextTurn();
+        }
+
+        public void StartNextTurn()
+        {
+            Current = GetNextInInitiative();
+            new LogAction(Log, $"It's {Current.State.Name}'s turn. His name is {Current.State.Name}.").Do();
         }
 
         public Side GetSide(Entity entity)
@@ -63,12 +73,16 @@ namespace Game.Combat {
 
             foreach(var entity in Combatants)
             {
+                if(entity == null)
+                {
+                    continue;
+                }
+
                 var initiativeValue = GetInitiative(entity);
                 var index = 0;
                 
                 // Sort by proper insertion
-                var isSlower = initiativeValue <= tempInitiative[index].Item2;
-                while(index < tempInitiative.Count && isSlower) 
+                while(index < tempInitiative.Count && initiativeValue <= tempInitiative[index].Item2) 
                 {
                     index++;
                 }

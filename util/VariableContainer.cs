@@ -19,9 +19,16 @@ namespace Game.Util
             {
                 var prev = _state;
 
-                lock(_state)
+                if(_state == null)
                 {
                     _state = value;
+                }
+                else
+                {
+                    lock(_state)
+                    {
+                        _state = value;
+                    }
                 }
 
                 RaiseStateChangeEvent(prev, value);
@@ -35,6 +42,11 @@ namespace Game.Util
         public delegate void StateChangeHandler(object sender, StateChangeEventArgs<T> args);
         public event StateChangeHandler StateChangeEvent;
 
+        public VariableContainer(T startValue = default)
+        {
+            _state = startValue;
+        }
+
         protected virtual void RaiseStateChangeEvent(T previous, T current)
         {
             StateChangeEvent?.Invoke(this, new StateChangeEventArgs<T>
@@ -44,7 +56,7 @@ namespace Game.Util
             });
         }
 
-        public T GetT()
+        public T Get()
         {
             return State;
         }

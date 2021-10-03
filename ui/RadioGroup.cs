@@ -10,6 +10,7 @@ namespace Game.UI
         public Theme Theme { get; }
         public List<Button> Buttons { get; } = new List<Button>();
         public VariableContainer<int> Selection { get; } = new VariableContainer<int>{ State = 0 };
+        public EnumerableContainer<string, List<string>> Items = new EnumerableContainer<string, List<string>>();
         
         public RadioGroup(int width, int height, List<string> items, Theme theme = null, params VariableContainer<int>.StateChangeHandler[] selectionHandlers) : base(width, height, 1, items.Count)
         {
@@ -28,12 +29,27 @@ namespace Game.UI
             }
             CalculateDimensions();
 
+            Items.StateChangeEvent += (obj, args) => AddButtons(args.Current);
+            Items.Set(items);
+        }
+
+        public void AddButtons(List<string> items)
+        {
+            Selection.Set(0);
+
+            Buttons.ForEach(button => {
+                button.Clear();
+                button.IsVisible = false;
+                button.Parent = null;
+            });
+            Buttons.Clear();
+
             var y = 0;
             foreach (var item in items)
             {
                 var index = y;
                 var button = Add((width, height) => new GravityLayout(width, height), 0, y).Add((width, height) => new Button(ColoredString.From(item), () => {
-                    Selection.State = index;
+                    Selection.Set(index);
                 }), 2, true, LayoutGravity.CENTER);
                 Buttons.Add(button);
                 button.Draw();
@@ -50,6 +66,11 @@ namespace Game.UI
         public void Draw()
         {
             Clear();
+
+            if(Selection >= Buttons.Count)
+            {
+                return;
+            }
 
             var button = Buttons[Selection];
             var y = button.Parent.Position.Y;
