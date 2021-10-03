@@ -54,7 +54,7 @@ namespace Game.UI.Combat
             hoverSurface.Position = display.Position;
             hoverSurface.Parent = this;
             hoverSurface.MouseButtonClicked += (setter, args) => {
-                var root = combatDisplay.AbilityPanel.CurrentAbility.Use(0, 0, Combat, Combat.Current, Combat.Combatants[4]);
+                var root = combatDisplay.AbilityPanel.CurrentAbility.Use(0, 0, Combat, Combat.Current, Combat.Combatants[index]);
                 root.Do(true);
 
                 var tap = Tap.CreateInstance();
