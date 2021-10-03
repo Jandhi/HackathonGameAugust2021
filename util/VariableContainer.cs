@@ -2,8 +2,8 @@ namespace Game.Util
 {
     public class StateChangeEventArgs<T>
     {
-        public T Previous;
-        public T Current;
+        public T OldValue;
+        public T NewValue;
     }
 
     public class VariableContainer<T>
@@ -51,8 +51,8 @@ namespace Game.Util
         {
             StateChangeEvent?.Invoke(this, new StateChangeEventArgs<T>
             { 
-                Previous = previous, 
-                Current = current
+                OldValue = previous, 
+                NewValue = current
             });
         }
 

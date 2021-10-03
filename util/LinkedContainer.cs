@@ -7,7 +7,7 @@ namespace Game.Util
         public LinkedContainer(VariableContainer<TSource> source, Func<TSource, TItem> converter)
         {
             source.StateChangeEvent += (obj, args) => {
-                Set(converter(args.Current));
+                Set(converter(args.NewValue));
             };
 
             Set(converter(source.State));

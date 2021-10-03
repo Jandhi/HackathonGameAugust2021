@@ -28,7 +28,7 @@ namespace Game.Combat {
         public void StartNextTurn()
         {
             Current = GetNextInInitiative();
-            new LogAction(Log, $"It's {Current.State.Name}'s turn. His name is {Current.State.Name}.").Do();
+            new LogAction(Log, $"It's {Current.State.Name}'s turn.").Do();
         }
 
         public Side GetSide(Entity entity)

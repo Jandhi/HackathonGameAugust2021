@@ -1,38 +1,33 @@
 using System.Collections.Generic;
 using System.Linq;
+using Game.Util;
 
 namespace Game.UI
 {
     public class TextDisplay : SadConsole.Console, IUIElement
     {
-        public static readonly string[] Punctuation = {",", ".", "'", "?", "!"};
+        
 
         public Theme Theme { get; }
         public List<string> Lines { get; set; }
         public virtual int MaxLineLength => Width;
-        private string text = "";
-        public string Text 
-        { 
-            get 
-            {
-                return text;
-            }
-            set 
-            {
-                text = value;
-                Lines = CalculateLines();
-                Draw();
-            } 
-        }
+        public EnumerableContainer<char, string> Text { get; }
         public bool DoWrapping { get; }
 
         public TextDisplay(string text, int width, int height, bool doWrapping = true, Theme theme = null) : base(width, height)
         {
             DoWrapping = doWrapping;
             Theme = theme ?? Theme.CurrentTheme;
-            Text = text;
+            Text = new EnumerableContainer<char, string>(text);
             UsePrintProcessor = true; // allow for coloring
 
+            Text.StateChangeEvent += (obj, args) => 
+            {
+                Lines = CalculateLines();
+                Draw();
+            };
+
+            Lines = CalculateLines();
             Draw();
         }
 
@@ -94,7 +89,7 @@ namespace Game.UI
                     line += word;
 
                     // Only add space if next real word doesn't start with punctuation
-                    if(!Punctuation.Any(punc => NextRealWord(words).StartsWith(punc)))
+                    if(!ColoredString.Punctuation.Any(punc => ColoredString.NextRealWord(words).StartsWith(punc)))
                     {
                         line += " ";
                     }
@@ -110,18 +105,7 @@ namespace Game.UI
             return lines;
         }
 
-        private string NextRealWord(List<string> words)
-        {
-            foreach(var word in words)
-            {
-                if(!word.StartsWith("[c:"))
-                {
-                    return word;
-                }
-            }
-
-            return "";
-        }
+        
 
         public List<string> CalculateLinesWithoutWrapping()
         {

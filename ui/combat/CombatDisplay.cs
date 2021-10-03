@@ -15,13 +15,10 @@ namespace Game.UI.Combat
         public Game.Combat.Combat Combat { get; }
         // Middle Displays
         public PositionPanel PositionPanel { get; }
-        public List<PositionDisplay> Positions { get; } = new List<PositionDisplay>();
         public VariableContainer<int> SelectedEntityIndex { get; set; }
         public LinkedContainer<Entity, int> SelectedEntity { get; }
         // Bottom Displays
-        public GridLayout BottomLayout { get; set; }
-        public AbilityPanel AbilityDisplay { get; set; }
-        public RadioGroup AbilityGroup { get; set; }
+        public AbilityPanel AbilityPanel { get; set; }
         // Side Display
         public EntityPanel EntityPanel { get; }
         
@@ -45,7 +42,7 @@ namespace Game.UI.Combat
             }));
 
             var bottom = Add((width, height) => new BorderedLayout(width, height), 0, 2).Add((width, height) => new GravityLayout(width, height));
-            BottomLayout = bottom.Add((width, height) => new AbilityPanel(width, height, Combat), 2, true, LayoutGravity.CENTER, 2, true, LayoutGravity.CENTER);
+            AbilityPanel = bottom.Add((width, height) => new AbilityPanel(width, height, Combat), 2, true, LayoutGravity.CENTER, 2, true, LayoutGravity.CENTER);
                 
 
             EntityPanel = Add((width, height) => new BorderedLayout(width, height), 1, 0, 1, 2)

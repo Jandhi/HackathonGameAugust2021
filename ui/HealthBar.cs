@@ -2,57 +2,53 @@ using SadConsole.Input;
 using System;
 using Microsoft.Xna.Framework;
 using Game.Combat;
+using Game.Util;
 
 namespace Game.UI
 {
-    public class HealthBar : SadConsole.Console, IStatChangeListener
+    public class HealthBar : SadConsole.Console
     {
         public static readonly Color HealthColor = Color.Green;
         public static readonly Color DamageColor = Color.Red;
-        public Entity entity;
-        public Entity Entity
-        {
-            get 
-            {
-                return entity;
-            }
-            set
-            {
-                entity = value;
-                Draw();
-            }
-        }
+        public VariableContainer<Entity> Entity;
 
-        private bool isHovered;
-        public bool IsHovered {
-            get 
-            {
-                return isHovered;
-            }
-            set
-            {
-                isHovered = value;
-                Draw();
-            } 
-        }
+        public VariableContainer<bool> IsHovered { get; } = new VariableContainer<bool>(false);
 
         public TextDisplay TextDisplay { get; }
 
-        public HealthBar(Entity entity, int width) : base(width, 1)
+        public HealthBar(VariableContainer<Entity> entity, int width) : base(width, 1)
         {
-            this.entity = entity;
-            entity.Stats.Listeners.Add(this);
+            Entity = entity;
 
             TextDisplay = new TextDisplay("", width, 1, false);
             TextDisplay.Parent = this;
-        }
 
-        public void NotifyStatChange(Entity entity, Stat stat, float oldValue, float newValue)
-        {
-            if(Entity == entity)
+            Entity.StateChangeEvent += (obj, args) => 
+            {
+                AddStatChangeListener(args.NewValue);
+                Draw();
+            };
+
+            IsHovered.StateChangeEvent += (obj, args) =>
             {
                 Draw();
+            };
+
+            AddStatChangeListener(entity);
+            Draw();
+        }
+
+        private void AddStatChangeListener(Entity entity)
+        {
+            if(entity == null)
+            {
+                return;
             }
+
+            entity.Stats.StatChangeEvent += (obj, args) => 
+            {
+                Draw();
+            };
         }
 
         public void Draw()
@@ -60,8 +56,13 @@ namespace Game.UI
             Clear();
             TextDisplay?.Clear();
 
-            var maxHealth = entity.Stats[Stat.MaxHealth];
-            var health = entity.Stats[Stat.Health];
+            if(Entity.Get() == null)
+            {
+                return;
+            }
+
+            var maxHealth = Entity.Get().Stats[Stat.MaxHealth];
+            var health = Entity.Get().Stats[Stat.Health];
             var greenTileCount = maxHealth == 0 ? 0 : (((Width) * health) / maxHealth);
             
             // Don't show empty if not dead
@@ -82,18 +83,18 @@ namespace Game.UI
                 SetGlyph(x, 0, 177, color);
             }
 
-            if(isHovered)
+            if(IsHovered)
             {
-                var text = Entity.IsDead ? "DEAD" : $"{health}/{maxHealth}";
+                var text = Entity.Get().IsDead ? "DEAD" : $"{health}/{maxHealth}";
                 var buffer = Width - text.Length;
 
                 if(buffer < 0)
                 {
-                    TextDisplay.Text = "";
+                    TextDisplay.Text.Set("");
                 }
                 else
                 {
-                    TextDisplay.Text = text.PadLeft(buffer / 2 + text.Length, ' ');
+                    TextDisplay.Text.Set(text.PadLeft(buffer / 2 + text.Length, ' '));
                 }
             }
         }

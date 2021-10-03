@@ -29,7 +29,7 @@ namespace Game.UI
             }
             CalculateDimensions();
 
-            Items.StateChangeEvent += (obj, args) => AddButtons(args.Current);
+            Items.StateChangeEvent += (obj, args) => AddButtons(args.NewValue);
             Items.Set(items);
         }
 

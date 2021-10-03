@@ -29,8 +29,8 @@ namespace Game.UI.Combat
             AddSubconsoles(combat.Current);
 
             combat.Current.StateChangeEvent += (obj, args) => {
-                AbilitySelection.Items.Set(args.Current.Abilities.Select(ability => ability.Name).ToList());
-                Current = args.Current;
+                AbilitySelection.Items.Set(args.NewValue.Abilities.Select(ability => ability.Name).ToList());
+                Current = args.NewValue;
             };
 
             AbilitySelection.Selection.StateChangeEvent += (obj, args) => {

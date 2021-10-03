@@ -7,6 +7,7 @@ namespace Game.UI
 {
     public class ColoredString
     {
+        public static readonly string[] Punctuation = {",", ".", "'", "?", "!"};
         public string Contents { get; set; }
         public Color Foreground { get; set; } = Color.White;
         public Color Background { get; set; } = Color.Black;
@@ -202,15 +203,24 @@ namespace Game.UI
             var words = GetWords(this.ToString());
             var result = "";
 
-            foreach(var word in words)
+            while(words.Count > 0)
             {
+                var word = words[0];
+                words.RemoveAt(0);
+
                 if(word.StartsWith("[c:"))
                 {
                     result += word;
                 }
                 else
                 {
-                    result += transform(word) + " ";
+                    result += transform(word);
+
+                    // Only add space if next real word doesn't start with punctuation
+                    if(!ColoredString.Punctuation.Any(punc => ColoredString.NextRealWord(words).StartsWith(punc)))
+                    {
+                        result += " ";
+                    }
                 }
             }
 
@@ -220,6 +230,19 @@ namespace Game.UI
             }
 
             return new ColoredString(result);
+        }
+
+        public static string NextRealWord(List<string> words)
+        {
+            foreach(var word in words)
+            {
+                if(!word.StartsWith("[c:"))
+                {
+                    return word;
+                }
+            }
+
+            return "";
         }
 
         public static ColoredString From(string text)

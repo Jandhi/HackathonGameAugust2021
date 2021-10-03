@@ -11,7 +11,7 @@ namespace Game.UI.Log
 
         public void OnLogChange(Log log)
         {
-            Text = log.ToString();
+            Text.Set(log.ToString());
             ScrollPosition = MaxScrollPosition;
             Draw();
         }

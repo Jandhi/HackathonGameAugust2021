@@ -3,15 +3,20 @@ using System.Linq;
 
 namespace Game.Combat
 {
-    public interface IStatChangeListener
+
+    public class StatChangeEventArgs
     {
-        void NotifyStatChange(Entity entity, Stat stat, float oldValue, float newValue);
+        public Entity Entity;
+        public Stat Stat;
+        public float OldValue;
+        public float NewValue;
     }
     
     public class StatBlock
     {
         public Dictionary<Stat, float> Contents { get; } = new Dictionary<Stat, float>();
-        public List<IStatChangeListener> Listeners { get; } = new List<IStatChangeListener>();
+        public delegate void StatChangeHandler(object sender, StatChangeEventArgs args);
+        public event StatChangeHandler StatChangeEvent;
         public Entity Parent { get; set; }
 
         public float this[Stat stat]
@@ -31,8 +36,19 @@ namespace Game.Combat
             {
                 var oldValue = this[stat];
                 Contents[stat] = value;
-                Listeners.ForEach(listener => listener.NotifyStatChange(Parent, stat, oldValue, value));
+                RaiseStatChangeEvent(stat, oldValue, value);
             }
+        }
+
+        protected virtual void RaiseStatChangeEvent(Stat stat, float oldValue, float newValue)
+        {
+            StatChangeEvent?.Invoke(this, new StatChangeEventArgs
+            {
+                Entity = Parent, 
+                Stat = stat,
+                OldValue = oldValue, 
+                NewValue = newValue
+            });
         }
 
         public StatBlock With(Stat stat, float value)

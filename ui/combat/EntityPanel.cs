@@ -18,6 +18,23 @@ namespace Game.UI.Combat
             UsePrintProcessor = true;
 
             Entity.StateChangeEvent += (obj, args) => {
+                SetupListener(args.NewValue);
+                Draw();
+            };
+
+            SetupListener(entity);
+            Draw();
+        }
+
+        private void SetupListener(Entity entity)
+        {
+            if(entity == null)
+            {
+                return;
+            }
+
+            entity.Stats.StatChangeEvent += (obj, args) => 
+            {
                 Draw();
             };
         }
